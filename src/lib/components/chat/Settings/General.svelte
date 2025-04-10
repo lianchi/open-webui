@@ -234,36 +234,34 @@
 
 <div class="flex flex-col h-full justify-between text-sm">
 	<div class="  overflow-y-scroll max-h-[28rem] lg:max-h-full">
-		<div class="">
-			<div class=" mb-1 text-sm font-medium">{$i18n.t('WebUI Settings')}</div>
+		<div class='space-y-0.5 text-xs pr-4'>
+			<div class="mb-1.5 text-sm font-bold">通用设置</div>
 
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">{$i18n.t('Theme')}</div>
-				<div class="flex items-center relative">
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div class="self-center text-xs font-medium">界面主题</div>
+				<div class="cursor-pointer flex items-center relative">
 					<select
-						class=" dark:bg-gray-900 w-fit pr-8 rounded-sm py-2 px-2 text-xs bg-transparent outline-hidden text-right"
+						class="dark:bg-gray-900 w-fit pr-8 rounded-sm px-2 text-xs bg-transparent outline-hidden"
 						bind:value={selectedTheme}
-						placeholder="Select a theme"
+						placeholder="选择主题"
 						on:change={() => themeChangeHandler(selectedTheme)}
 					>
-						<option value="system">⚙️ {$i18n.t('System')}</option>
-						<option value="dark">🌑 {$i18n.t('Dark')}</option>
-						<option value="oled-dark">🌃 {$i18n.t('OLED Dark')}</option>
-						<option value="light">☀️ {$i18n.t('Light')}</option>
-						<option value="her">🌷 Her</option>
-						<!-- <option value="rose-pine dark">🪻 {$i18n.t('Rosé Pine')}</option>
-						<option value="rose-pine-dawn light">🌷 {$i18n.t('Rosé Pine Dawn')}</option> -->
+						<option value="system">⚙️ 系统</option>
+						<option value="dark">🌑 暗色</option>
+						<option value="oled-dark">🌃 黑色</option>
+						<option value="light">☀️ 浅色</option>
+						<option value="her">🌷 玫瑰</option>
 					</select>
 				</div>
 			</div>
 
-			<div class=" flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">{$i18n.t('Language')}</div>
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div class=" self-center text-xs font-medium">语言</div>
 				<div class="flex items-center relative">
 					<select
-						class=" dark:bg-gray-900 w-fit pr-8 rounded-sm py-2 px-2 text-xs bg-transparent outline-hidden text-right"
+						class=" dark:bg-gray-900 w-fit pr-8 rounded-sm px-2 text-xs bg-transparent outline-hidden"
 						bind:value={lang}
-						placeholder="Select a language"
+						placeholder="选择语言"
 						on:change={(e) => {
 							changeLanguage(lang);
 						}}
@@ -274,133 +272,107 @@
 					</select>
 				</div>
 			</div>
-			{#if $i18n.language === 'en-US'}
-				<div class="mb-2 text-xs text-gray-400 dark:text-gray-500">
-					Couldn't find your language?
-					<a
-						class=" text-gray-300 font-medium underline"
-						href="https://github.com/open-webui/open-webui/blob/main/docs/CONTRIBUTING.md#-translations-and-internationalization"
-						target="_blank"
-					>
-						Help us translate Open WebUI!
-					</a>
-				</div>
-			{/if}
 
-			<div>
-				<div class=" py-0.5 flex w-full justify-between">
-					<div class=" self-center text-xs font-medium">{$i18n.t('Notifications')}</div>
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+					<div>桌面通知</div>
 
 					<button
-						class="p-1 px-3 text-xs flex rounded-sm transition"
+						class='hover:text-black dark:hover:text-white'
 						on:click={() => {
 							toggleNotification();
 						}}
 						type="button"
 					>
 						{#if notificationEnabled === true}
-							<span class="ml-2 self-center">{$i18n.t('On')}</span>
+							<span>开启</span>
 						{:else}
-							<span class="ml-2 self-center">{$i18n.t('Off')}</span>
+							<span>关闭</span>
 						{/if}
 					</button>
 				</div>
-			</div>
 		</div>
 
 		{#if $user?.role === 'admin' || $user?.permissions.chat?.controls}
-			<hr class="border-gray-50 dark:border-gray-850 my-3" />
+			<hr class="border-gray-100 dark:border-gray-850 my-3" />
 
-			<div>
-				<div class=" my-2.5 text-sm font-medium">{$i18n.t('System Prompt')}</div>
+			<div class="pr-4">
+				<div class="my-1.5 text-sm font-bold">系统提示词</div>
 				<Textarea
 					bind:value={system}
-					className="w-full text-sm bg-white dark:text-gray-300 dark:bg-gray-900 outline-hidden resize-none"
-					rows="4"
-					placeholder={$i18n.t('Enter system prompt here')}
+					className="bg-transparent resize-none max-h-[10rem]"
+					rows={2}
+					placeholder="输入系统提示词"
 				/>
 			</div>
 
-			<div class="mt-2 space-y-3 pr-1.5">
-				<div class="flex justify-between items-center text-sm">
-					<div class="  font-medium">{$i18n.t('Advanced Parameters')}</div>
+			<div class="mt-2 space-y-3">
+				<div class="flex justify-between items-center text-sm pr-4">
+					<div class="my-1.5 text-sm font-bold">高级参数</div>
 					<button
-						class=" text-xs font-medium text-gray-500"
+						class="text-gray-500"
 						type="button"
 						on:click={() => {
 							showAdvanced = !showAdvanced;
-						}}>{showAdvanced ? $i18n.t('Hide') : $i18n.t('Show')}</button
+						}}>{showAdvanced ? '隐藏' : '显示'}</button
 					>
 				</div>
 
 				{#if showAdvanced}
 					<AdvancedParams admin={$user?.role === 'admin'} bind:params />
-					<hr class=" border-gray-100 dark:border-gray-850" />
 
-					<div class=" w-full justify-between">
-						<div class="flex w-full justify-between">
-							<div class=" self-center text-xs font-medium">{$i18n.t('Keep Alive')}</div>
+					<hr class="border-gray-100 dark:border-gray-850" />
+
+					<div class='space-y-0.5 text-xs pr-4'>
+						<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+							<div>保持活动</div>
 
 							<button
-								class="p-1 px-3 text-xs flex rounded-sm transition"
+								class="hover:text-black dark:hover:text-white"
 								type="button"
 								on:click={() => {
 									keepAlive = keepAlive === null ? '5m' : null;
 								}}
 							>
 								{#if keepAlive === null}
-									<span class="ml-2 self-center"> {$i18n.t('Default')} </span>
+									<span>默认</span>
 								{:else}
-									<span class="ml-2 self-center"> {$i18n.t('Custom')} </span>
+									<span>自定义</span>
 								{/if}
 							</button>
 						</div>
 
 						{#if keepAlive !== null}
-							<div class="flex mt-1 space-x-2">
+							<div class="mt-1 px-2">
 								<input
-									class="w-full text-sm dark:text-gray-300 dark:bg-gray-850 outline-hidden"
+									class="w-full px-2 py-1 rounded-md text-xs border border-gray-200 dark:border-gray-800 dark:text-gray-300 outline-hidden"
 									type="text"
-									placeholder={$i18n.t("e.g. '30s','10m'. Valid time units are 's', 'm', 'h'.")}
+									placeholder="例如 '30s'，'10m'。有效的时间单位是秒：'s'，分：'m'，时：'h'。"
 									bind:value={keepAlive}
 								/>
 							</div>
 						{/if}
-					</div>
 
-					<div>
-						<div class=" flex w-full justify-between">
-							<div class=" self-center text-xs font-medium">{$i18n.t('Request Mode')}</div>
+						<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+							<div>请求模式</div>
 
 							<button
-								class="p-1 px-3 text-xs flex rounded-sm transition"
+								class="hover:text-black dark:hover:text-white"
 								on:click={() => {
 									toggleRequestFormat();
 								}}
 							>
 								{#if requestFormat === null}
-									<span class="ml-2 self-center"> {$i18n.t('Default')} </span>
+									<span>默认</span>
 								{:else}
-									<!-- <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            class="w-4 h-4 self-center"
-                        >
-                            <path
-                                d="M10 2a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 2zM10 15a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 15zM10 7a3 3 0 100 6 3 3 0 000-6zM15.657 5.404a.75.75 0 10-1.06-1.06l-1.061 1.06a.75.75 0 001.06 1.06l1.06-1.06zM6.464 14.596a.75.75 0 10-1.06-1.06l-1.06 1.06a.75.75 0 001.06 1.06l1.06-1.06zM18 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0118 10zM5 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 015 10zM14.596 15.657a.75.75 0 001.06-1.06l-1.06-1.061a.75.75 0 10-1.06 1.06l1.06 1.06zM5.404 6.464a.75.75 0 001.06-1.06l-1.06-1.06a.75.75 0 10-1.061 1.06l1.06 1.06z"
-                            />
-                        </svg> -->
-									<span class="ml-2 self-center"> {$i18n.t('JSON')} </span>
+									<span>JSON</span>
 								{/if}
 							</button>
 						</div>
 
 						{#if requestFormat !== null}
-							<div class="flex mt-1 space-x-2">
+							<div class="flex mt-1 px-2">
 								<Textarea
-									className="w-full  text-sm dark:text-gray-300 dark:bg-gray-900 outline-hidden"
-									placeholder={$i18n.t('e.g. "json" or a JSON schema')}
+									placeholder="例如 'json' 或一个 JSON schema"
 									bind:value={requestFormat}
 								/>
 							</div>
@@ -411,14 +383,14 @@
 		{/if}
 	</div>
 
-	<div class="flex justify-end pt-3 text-sm font-medium">
+	<div class="flex justify-end mt-4 text-sm font-medium">
 		<button
 			class="px-3.5 py-1.5 text-sm font-medium bg-black hover:bg-gray-900 text-white dark:bg-white dark:text-black dark:hover:bg-gray-100 transition rounded-full"
 			on:click={() => {
 				saveHandler();
 			}}
 		>
-			{$i18n.t('Save')}
+			保存
 		</button>
 	</div>
 </div>

@@ -1,9 +1,7 @@
 <script>
   import { goto } from '$app/navigation'
   import { config, WEBUI_NAME } from '$lib/stores'
-  import { getContext, onMount } from 'svelte'
-
-  const i18n = getContext('i18n')
+  import { onMount } from 'svelte'
 
   let loaded = false
 
@@ -22,17 +20,7 @@
       <div class='m-auto pb-44 flex flex-col justify-center'>
         <div class='max-w-md'>
           <div class='text-center text-2xl font-medium z-50'>
-            {$WEBUI_NAME} 需要后端服务
-          </div>
-
-          <div class='mt-4 text-center text-sm w-full'>
-            <a
-              class=' font-semibold underline'
-              href='https://github.com/open-webui/open-webui#how-to-install-'
-              target='_blank'
-            >
-              查看 readme.md 以获取说明
-            </a>
+            「{$WEBUI_NAME}」需要后端服务
           </div>
 
           <div class=' mt-6 mx-auto relative group w-fit'>

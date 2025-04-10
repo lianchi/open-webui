@@ -2,7 +2,7 @@
 	import { toast } from 'svelte-sonner';
 	import { marked } from 'marked';
 
-	import { onMount, getContext, tick, createEventDispatcher } from 'svelte';
+	import { onMount, tick, createEventDispatcher } from 'svelte';
 	import { blur, fade } from 'svelte/transition';
 
 	const dispatch = createEventDispatcher();
@@ -15,8 +15,6 @@
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
 	import EyeSlash from '$lib/components/icons/EyeSlash.svelte';
 	import MessageInput from './MessageInput.svelte';
-
-	const i18n = getContext('i18n');
 
 	export let transparentBackground = false;
 
@@ -47,7 +45,7 @@
 
 		if (p.includes('{{CLIPBOARD}}')) {
 			const clipboardText = await navigator.clipboard.readText().catch((err) => {
-				toast.error($i18n.t('Failed to read clipboard contents'));
+				toast.error('读取剪贴板内容失败');
 				return '{{CLIPBOARD}}';
 			});
 
@@ -91,12 +89,12 @@
 <div class="m-auto w-full max-w-6xl px-2 @2xl:px-20 translate-y-6 py-24 text-center">
 	{#if $temporaryChatEnabled}
 		<Tooltip
-			content={$i18n.t('This chat won’t appear in history and your messages will not be saved.')}
+			content='此聊天不会出现在历史记录中，且您的消息不会被保存。'
 			className="w-full flex justify-center mb-0.5"
 			placement="top"
 		>
 			<div class="flex items-center gap-2 text-gray-500 font-medium text-lg my-2 w-fit">
-				<EyeSlash strokeWidth="2.5" className="size-5" />{$i18n.t('Temporary Chat')}
+				<EyeSlash strokeWidth="2.5" className="size-5" />临时对话
 			</div>
 		</Tooltip>
 	{/if}
@@ -122,11 +120,8 @@
 								>
 									<img
 										crossorigin="anonymous"
-										src={model?.info?.meta?.profile_image_url ??
-											($i18n.language === 'dg-DG'
-												? `/doge.png`
-												: `${WEBUI_BASE_URL}/static/favicon.png`)}
-										class=" w-24 h-24 rounded-full border-[1px] border-gray-100 dark:border-none"
+										src={model?.info?.meta?.profile_image_url ?? `${WEBUI_BASE_URL}/static/favicon.png`}
+										class=" w-20 h-20"
 										alt="logo"
 										draggable="false"
 									/>
@@ -136,11 +131,11 @@
 					</div>
 				</div>
 
-				<div class=" text-3xl @sm:text-4xl line-clamp-1" in:fade={{ duration: 100 }}>
+				<div class="text-3xl @sm:text-4xl line-clamp-1" in:fade={{ duration: 100 }}>
 					{#if models[selectedModelIdx]?.name}
 						{models[selectedModelIdx]?.name}
 					{:else}
-						{$i18n.t('Hello, {{name}}', { name: $user?.name })}
+						{`欢迎使用天熠小舟，${$user?.name}`}
 					{/if}
 				</div>
 			</div>
@@ -166,18 +161,7 @@
 
 						{#if models[selectedModelIdx]?.info?.meta?.user}
 							<div class="mt-0.5 text-sm font-normal text-gray-400 dark:text-gray-500">
-								By
-								{#if models[selectedModelIdx]?.info?.meta?.user.community}
-									<a
-										href="https://openwebui.com/m/{models[selectedModelIdx]?.info?.meta?.user
-											.username}"
-										>{models[selectedModelIdx]?.info?.meta?.user.name
-											? models[selectedModelIdx]?.info?.meta?.user.name
-											: `@${models[selectedModelIdx]?.info?.meta?.user.username}`}</a
-									>
-								{:else}
-									{models[selectedModelIdx]?.info?.meta?.user.name}
-								{/if}
+								By {models[selectedModelIdx]?.info?.meta?.user.name}
 							</div>
 						{/if}
 					{/if}
@@ -200,7 +184,7 @@
 					{transparentBackground}
 					{stopResponse}
 					{createMessagePair}
-					placeholder={$i18n.t('How can I help you today?')}
+					placeholder='有什么我能帮您的吗？'
 					on:upload={(e) => {
 						dispatch('upload', e.detail);
 					}}
@@ -211,7 +195,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="mx-auto max-w-2xl font-primary hidden" in:fade={{ duration: 200, delay: 200 }}>
+	<div class="mx-auto max-w-2xl font-primary" in:fade={{ duration: 200, delay: 200 }}>
 		<div class="mx-5">
 			<Suggestions
 				suggestionPrompts={atSelectedModel?.info?.meta?.suggestion_prompts ??

@@ -46,21 +46,19 @@
 	}
 </script>
 
-<div class=" space-y-1 text-xs pb-safe-bottom">
+<div class='space-y-0.5 text-xs pr-4'>
 	<div>
 		<Tooltip
-			content={$i18n.t(
-				'When enabled, the model will respond to each chat message in real-time, generating a response as soon as the user sends a message. This mode is useful for live chat applications, but may impact performance on slower hardware.'
-			)}
+			content='启用后，模型将实时回复每条聊天信息，在用户发送信息后立即生成回复。这种模式对即时聊天应用非常有用，但可能会影响较慢硬件的性能。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class=" py-0.5 flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Stream Chat Response')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					以流式返回对话响应
 				</div>
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition"
+					class='hover:text-black dark:hover:text-white'
 					on:click={() => {
 						params.stream_response =
 							(params?.stream_response ?? null) === null
@@ -72,11 +70,11 @@
 					type="button"
 				>
 					{#if params.stream_response === true}
-						<span class="ml-2 self-center">{$i18n.t('On')}</span>
+						<span>开启</span>
 					{:else if params.stream_response === false}
-						<span class="ml-2 self-center">{$i18n.t('Off')}</span>
+						<span>关闭</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{/if}
 				</button>
 			</div>
@@ -85,153 +83,141 @@
 
 	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Default mode works with a wider range of models by calling tools once before execution. Native mode leverages the model’s built-in tool-calling capabilities, but requires the model to inherently support this feature.'
-			)}
+			content='默认模式通过在执行前调用一次工具，能够兼容更广泛的模型。原生模式利用模型内置的工具调用能力，但需要模型本身具备该功能的原生支持。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class=" py-0.5 flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Function Calling')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					函数调用（Function Calling）
 				</div>
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition"
+					class='hover:text-black dark:hover:text-white'
 					on:click={() => {
 						params.function_calling = (params?.function_calling ?? null) === null ? 'native' : null;
 					}}
 					type="button"
 				>
 					{#if params.function_calling === 'native'}
-						<span class="ml-2 self-center">{$i18n.t('Native')}</span>
+						<span>原生</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Sets the random number seed to use for generation. Setting this to a specific number will make the model generate the same text for the same prompt.'
-			)}
+			content='设置用于生成的随机数种子。将其设置为特定数字将使模型针对同一提示生成相同的文本。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Seed')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					种子（Seed）
 				</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.seed = (params?.seed ?? null) === null ? 0 : null;
 					}}
 				>
 					{#if (params?.seed ?? null) === null}
-						<span class="ml-2 self-center"> {$i18n.t('Default')} </span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center"> {$i18n.t('Custom')} </span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.seed ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
-					<input
-						class="w-full rounded-lg py-2 px-4 text-sm dark:text-gray-300 dark:bg-gray-850 outline-hidden"
-						type="number"
-						placeholder={$i18n.t('Enter Seed')}
-						bind:value={params.seed}
-						autocomplete="off"
-						min="0"
-					/>
-				</div>
+			<div class="w-full flex mt-1 px-2">
+				<input
+					class="w-full rounded-lg py-1 px-4 text-sm dark:text-gray-300 dark:bg-gray-850 outline-hidden"
+					type="number"
+					placeholder='输入种子'
+					bind:value={params.seed}
+					autocomplete="off"
+					min="0"
+				/>
 			</div>
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Sets the stop sequences to use. When this pattern is encountered, the LLM will stop generating text and return. Multiple stop patterns may be set by specifying multiple separate stop parameters in a modelfile.'
-			)}
+			content='设置要使用的停止序列。遇到这种模式时，大语言模型将停止生成文本并返回。可以通过在模型文件中指定多个单独的停止参数来设置多个停止模式。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Stop Sequence')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					停止序列 (Stop Sequence)
 				</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.stop = (params?.stop ?? null) === null ? '' : null;
 					}}
 				>
 					{#if (params?.stop ?? null) === null}
-						<span class="ml-2 self-center"> {$i18n.t('Default')} </span>
+						<span> 默认 </span>
 					{:else}
-						<span class="ml-2 self-center"> {$i18n.t('Custom')} </span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.stop ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
-					<input
-						class="w-full rounded-lg py-2 px-1 text-sm dark:text-gray-300 dark:bg-gray-850 outline-hidden"
-						type="text"
-						placeholder={$i18n.t('Enter stop sequence')}
-						bind:value={params.stop}
-						autocomplete="off"
-					/>
-				</div>
+			<div class="w-full flex mt-1 px-2">
+				<input
+					class="w-full rounded-lg py-1 px-4 text-sm dark:text-gray-300 dark:bg-gray-850 outline-hidden"
+					type="text"
+					placeholder='输入停止序列'
+					bind:value={params.stop}
+					autocomplete="off"
+				/>
 			</div>
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'The temperature of the model. Increasing the temperature will make the model answer more creatively.'
-			)}
+			content='模型的温度。增加温度将使模型的回答更有创意。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Temperature')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					温度 (Temperature)
 				</div>
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.temperature = (params?.temperature ?? null) === null ? 0.8 : null;
 					}}
 				>
 					{#if (params?.temperature ?? null) === null}
-						<span class="ml-2 self-center"> {$i18n.t('Default')} </span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center"> {$i18n.t('Custom')} </span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.temperature ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -246,7 +232,7 @@
 					<input
 						bind:value={params.temperature}
 						type="number"
-						class=" bg-transparent text-center w-14"
+						class="bg-transparent text-center w-14"
 						min="0"
 						max="2"
 						step="any"
@@ -256,123 +242,113 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Constrains effort on reasoning for reasoning models. Only applicable to reasoning models from specific providers that support reasoning effort.'
-			)}
+			content='约束推理模型的推理努力程度。仅适用于支持推理努力控制的特定提供商的推理模型。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Reasoning Effort')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					推理努力
 				</div>
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.reasoning_effort = (params?.reasoning_effort ?? null) === null ? 'medium' : null;
 					}}
 				>
 					{#if (params?.reasoning_effort ?? null) === null}
-						<span class="ml-2 self-center"> {$i18n.t('Default')} </span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center"> {$i18n.t('Custom')} </span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.reasoning_effort ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
-					<input
-						class="w-full rounded-lg py-2 px-1 text-sm dark:text-gray-300 dark:bg-gray-850 outline-hidden"
-						type="text"
-						placeholder={$i18n.t('Enter reasoning effort')}
-						bind:value={params.reasoning_effort}
-						autocomplete="off"
-					/>
-				</div>
+			<div class="flex mt-1 px-2">
+				<input
+					class="w-full rounded-lg py-1 px-4 text-sm dark:text-gray-300 dark:bg-gray-850 outline-hidden"
+					type="text"
+					placeholder='输入推理努力'
+					bind:value={params.reasoning_effort}
+					autocomplete="off"
+				/>
 			</div>
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Boosting or penalizing specific tokens for constrained responses. Bias values will be clamped between -100 and 100 (inclusive). (Default: none)'
-			)}
+			content='为受限响应提升或惩罚特定标记。偏置值将被限制在 -100 到 100（包括两端）之间。（默认：无）'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Logit Bias')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					Logit 偏置
 				</div>
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.logit_bias = (params?.logit_bias ?? null) === null ? '' : null;
 					}}
 				>
 					{#if (params?.logit_bias ?? null) === null}
-						<span class="ml-2 self-center"> {$i18n.t('Default')} </span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center"> {$i18n.t('Custom')} </span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.logit_bias ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
-					<input
-						class="w-full rounded-lg pl-2 py-2 px-1 text-sm dark:text-gray-300 dark:bg-gray-850 outline-hidden"
-						type="text"
-						placeholder={$i18n.t(
-							'Enter comma-seperated "token:bias_value" pairs (example: 5432:100, 413:-100)'
-						)}
-						bind:value={params.logit_bias}
-						autocomplete="off"
-					/>
-				</div>
+			<div class="flex mt-1 px-2">
+				<input
+					class="w-full rounded-lg pl-2 py-1 px-4 text-sm dark:text-gray-300 dark:bg-gray-850 outline-hidden"
+					type="text"
+					placeholder='输入以逗号分隔的“token:bias_value”对（例如：5432:100, 413:-100）'
+					bind:value={params.logit_bias}
+					autocomplete="off"
+				/>
 			</div>
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t('Enable Mirostat sampling for controlling perplexity.')}
+			content='启用 Mirostat 采样以控制困惑度'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Mirostat')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					Mirostat
 				</div>
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.mirostat = (params?.mirostat ?? null) === null ? 0 : null;
 					}}
 				>
 					{#if (params?.mirostat ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.mirostat ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -397,37 +373,35 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Influences how quickly the algorithm responds to feedback from the generated text. A lower learning rate will result in slower adjustments, while a higher learning rate will make the algorithm more responsive.'
-			)}
+			content='影响算法对生成文本反馈的响应速度。较低的学习率将导致调整更慢，而较高的学习率将使算法反应更灵敏。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Mirostat Eta')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					Mirostat Eta
 				</div>
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.mirostat_eta = (params?.mirostat_eta ?? null) === null ? 0.1 : null;
 					}}
 				>
 					{#if (params?.mirostat_eta ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.mirostat_eta ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -452,38 +426,36 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Controls the balance between coherence and diversity of the output. A lower value will result in more focused and coherent text.'
-			)}
+			content='控制输出文本中连贯性和多样性之间的平衡。较低的值将产生更加专注和连贯的文本。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Mirostat Tau')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					Mirostat Tau
 				</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.mirostat_tau = (params?.mirostat_tau ?? null) === null ? 5.0 : null;
 					}}
 				>
 					{#if (params?.mirostat_tau ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.mirostat_tau ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -508,37 +480,35 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Reduces the probability of generating nonsense. A higher value (e.g. 100) will give more diverse answers, while a lower value (e.g. 10) will be more conservative.'
-			)}
+			content='降低生成无意义内容的概率。较高的值（如100）将产生更多样化的回答，而较低的值（如10）则更加保守。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Top K')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					Top K
 				</div>
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.top_k = (params?.top_k ?? null) === null ? 40 : null;
 					}}
 				>
 					{#if (params?.top_k ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.top_k ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -563,38 +533,36 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Works together with top-k. A higher value (e.g., 0.95) will lead to more diverse text, while a lower value (e.g., 0.5) will generate more focused and conservative text.'
-			)}
+			content='与 top-k 配合使用。较高的值（例如 0.95）将产生更加多样化的文本，而较低的值（例如 0.5）将产生更加集中和保守的文本。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Top P')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					Top P
 				</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.top_p = (params?.top_p ?? null) === null ? 0.9 : null;
 					}}
 				>
 					{#if (params?.top_p ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.top_p ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -619,37 +587,35 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Alternative to the top_p, and aims to ensure a balance of quality and variety. The parameter p represents the minimum probability for a token to be considered, relative to the probability of the most likely token. For example, with p=0.05 and the most likely token having a probability of 0.9, logits with a value less than 0.045 are filtered out.'
-			)}
+			content='top_p 的替代方法，旨在确保质量和多样性之间的平衡。参数 p 表示相对于最可能令牌的概率，一个令牌被考虑的最小概率。例如，当 p=0.05 且最可能的令牌概率为 0.9 时，概率值小于 0.045 的词元将被过滤掉。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Min P')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					Min P
 				</div>
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.min_p = (params?.min_p ?? null) === null ? 0.0 : null;
 					}}
 				>
 					{#if (params?.min_p ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.min_p ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -674,38 +640,36 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Sets a scaling bias against tokens to penalize repetitions, based on how many times they have appeared. A higher value (e.g., 1.5) will penalize repetitions more strongly, while a lower value (e.g., 0.9) will be more lenient. At 0, it is disabled.'
-			)}
+			content='根据标记出现的次数，设置一个缩放偏置值来惩罚重复。较高的值（例如1.5）将更强烈地惩罚重复，而较低的值（例如0.9）则更为宽松。当值为0时，此功能将被禁用。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Frequency Penalty')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					频率惩罚
 				</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.frequency_penalty = (params?.frequency_penalty ?? null) === null ? 1.1 : null;
 					}}
 				>
 					{#if (params?.frequency_penalty ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.frequency_penalty ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -730,38 +694,36 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Sets a flat bias against tokens that have appeared at least once. A higher value (e.g., 1.5) will penalize repetitions more strongly, while a lower value (e.g., 0.9) will be more lenient. At 0, it is disabled.'
-			)}
+			content='对至少出现过一次的标记设置固定偏置值。较高的值（例如1.5）将更强烈地惩罚重复，而较低的值（例如0.9）则更为宽松。当值为0时，此功能将被禁用。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Presence Penalty')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					重复惩罚（Presence Penalty）
 				</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded transition flex-shrink-0 outline-none"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.presence_penalty = (params?.presence_penalty ?? null) === null ? 0.0 : null;
 					}}
 				>
 					{#if (params?.presence_penalty ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.presence_penalty ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -786,36 +748,36 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t('Sets how far back for the model to look back to prevent repetition.')}
+			content='设置模型回溯的范围，以防止重复。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Repeat Last N')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					重复最后 N 次
 				</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.repeat_last_n = (params?.repeat_last_n ?? null) === null ? 64 : null;
 					}}
 				>
 					{#if (params?.repeat_last_n ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.repeat_last_n ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -840,38 +802,36 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Tail free sampling is used to reduce the impact of less probable tokens from the output. A higher value (e.g., 2.0) will reduce the impact more, while a value of 1.0 disables this setting.'
-			)}
+			content='无尾采样用于减少输出中出现概率较小的 Token 的影响。较高的值（例如 2.0）将进一步减少影响，而值 1.0 则禁用此设置。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Tfs Z')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					Tfs Z
 				</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.tfs_z = (params?.tfs_z ?? null) === null ? 1 : null;
 					}}
 				>
 					{#if (params?.tfs_z ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.tfs_z ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -896,38 +856,36 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'This option controls how many tokens are preserved when refreshing the context. For example, if set to 2, the last 2 tokens of the conversation context will be retained. Preserving context can help maintain the continuity of a conversation, but it may reduce the ability to respond to new topics.'
-			)}
+			content='此选项控制刷新上下文时保留多少 Token。例如，如果设置为 2，则将保留对话上下文的最后 2 个 Token。保留上下文有助于保持对话的连续性，但可能会降低响应新主题的能力。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Tokens To Keep On Context Refresh (num_keep)')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					在语境刷新时需保留的 Token 数量
 				</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.num_keep = (params?.num_keep ?? null) === null ? 24 : null;
 					}}
 				>
 					{#if (params?.num_keep ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.num_keep ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -951,38 +909,36 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'This option sets the maximum number of tokens the model can generate in its response. Increasing this limit allows the model to provide longer answers, but it may also increase the likelihood of unhelpful or irrelevant content being generated.'
-			)}
+			content='此项用于设置模型在其响应中可以生成的最大 Token 数。增加此限制可让模型提供更长的答案，但也可能增加生成无用或不相关内容的可能性。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Max Tokens (num_predict)')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					最大 Token 数量 (num_predict)
 				</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.max_tokens = (params?.max_tokens ?? null) === null ? 128 : null;
 					}}
 				>
 					{#if (params?.max_tokens ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.max_tokens ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -1006,38 +962,36 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'Control the repetition of token sequences in the generated text. A higher value (e.g., 1.5) will penalize repetitions more strongly, while a lower value (e.g., 1.1) will be more lenient. At 1, it is disabled.'
-			)}
+			content='控制生成文本中标记序列的重复度。较高的值（例如1.5）将更强烈地惩罚重复，而较低的值（例如1.1）则更为宽松。当值为1时，此功能将被禁用。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Repeat Penalty (Ollama)')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					重复惩罚（Ollama）
 				</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded transition flex-shrink-0 outline-none"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.repeat_penalty = (params?.repeat_penalty ?? null) === null ? 1.1 : null;
 					}}
 				>
 					{#if (params?.repeat_penalty ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.repeat_penalty ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -1062,37 +1016,36 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t('Sets the size of the context window used to generate the next token.')}
+			content='设置用于生成下一个 Token 的上下文窗口的大小。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Context Length')}
-					{$i18n.t('(Ollama)')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					上下文长度 (Ollama)
 				</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.num_ctx = (params?.num_ctx ?? null) === null ? 2048 : null;
 					}}
 				>
 					{#if (params?.num_ctx ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.num_ctx ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -1116,38 +1069,36 @@
 		{/if}
 	</div>
 
-	<div class=" py-0.5 w-full justify-between">
+	<div>
 		<Tooltip
-			content={$i18n.t(
-				'The batch size determines how many text requests are processed together at once. A higher batch size can increase the performance and speed of the model, but it also requires more memory.'
-			)}
+			content='批处理大小决定了一次可以处理多少个文本请求。更高的批处理大小可以提高模型的性能和速度，但也需要更多内存。'
 			placement="top-start"
 			className="inline-tooltip"
 		>
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">
-					{$i18n.t('Batch Size (num_batch)')}
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>
+					批大小 (num_batch)
 				</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.num_batch = (params?.num_batch ?? null) === null ? 512 : null;
 					}}
 				>
 					{#if (params?.num_batch ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>自定义</span>
 					{/if}
 				</button>
 			</div>
 		</Tooltip>
 
 		{#if (params?.num_batch ?? null) !== null}
-			<div class="flex mt-0.5 space-x-2">
-				<div class=" flex-1">
+			<div class="flex mt-1 space-x-2 px-2">
+				<div class="flex-1">
 					<input
 						id="steps-range"
 						type="range"
@@ -1172,38 +1123,36 @@
 	</div>
 
 	{#if admin}
-		<div class=" py-0.5 w-full justify-between">
+		<div>
 			<Tooltip
-				content={$i18n.t(
-					'Enable Memory Mapping (mmap) to load model data. This option allows the system to use disk storage as an extension of RAM by treating disk files as if they were in RAM. This can improve model performance by allowing for faster data access. However, it may not work correctly with all systems and can consume a significant amount of disk space.'
-				)}
+				content='启用内存映射（mmap）以加载模型数据。此选项允许系统通过将磁盘文件视为在RAM中来使用磁盘存储作为RAM的扩展。这可以通过更快的数据访问来提高模型性能。然而，它可能无法在所有系统上正常工作，并且可能会消耗大量磁盘空间。'
 				placement="top-start"
 				className="inline-tooltip"
 			>
-				<div class="flex w-full justify-between">
-					<div class=" self-center text-xs font-medium">
-						{$i18n.t('use_mmap (Ollama)')}
+				<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+					<div>
+						use_mmap（Ollama）
 					</div>
 					<button
-						class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+						class='hover:text-black dark:hover:text-white'
 						type="button"
 						on:click={() => {
 							params.use_mmap = (params?.use_mmap ?? null) === null ? true : null;
 						}}
 					>
 						{#if (params?.use_mmap ?? null) === null}
-							<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+							<span>默认</span>
 						{:else}
-							<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+							<span>自定义</span>
 						{/if}
 					</button>
 				</div>
 			</Tooltip>
 
 			{#if (params?.use_mmap ?? null) !== null}
-				<div class="flex justify-between items-center mt-1">
+				<div class="flex justify-between items-center mt-1 px-2">
 					<div class="text-xs text-gray-500">
-						{params.use_mmap ? 'Enabled' : 'Disabled'}
+						{params.use_mmap ? '启用' : '禁用'}
 					</div>
 					<div class=" pr-2">
 						<Switch bind:state={params.use_mmap} />
@@ -1212,39 +1161,37 @@
 			{/if}
 		</div>
 
-		<div class=" py-0.5 w-full justify-between">
+		<div>
 			<Tooltip
-				content={$i18n.t(
-					"Enable Memory Locking (mlock) to prevent model data from being swapped out of RAM. This option locks the model's working set of pages into RAM, ensuring that they will not be swapped out to disk. This can help maintain performance by avoiding page faults and ensuring fast data access."
-				)}
+				content='启用内存锁定（mlock）以防止模型数据被交换出RAM。此选项将模型的工作集页面锁定在RAM中，确保它们不会被交换到磁盘。这可以通过避免页面错误和确保快速数据访问来帮助维持性能。'
 				placement="top-start"
 				className="inline-tooltip"
 			>
-				<div class="flex w-full justify-between">
-					<div class=" self-center text-xs font-medium">
-						{$i18n.t('use_mlock (Ollama)')}
+				<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+					<div>
+						use_mlock（Ollama）
 					</div>
 
 					<button
-						class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+						class='hover:text-black dark:hover:text-white'
 						type="button"
 						on:click={() => {
 							params.use_mlock = (params?.use_mlock ?? null) === null ? true : null;
 						}}
 					>
 						{#if (params?.use_mlock ?? null) === null}
-							<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+							<span>默认</span>
 						{:else}
-							<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+							<span>自定义</span>
 						{/if}
 					</button>
 				</div>
 			</Tooltip>
 
 			{#if (params?.use_mlock ?? null) !== null}
-				<div class="flex justify-between items-center mt-1">
+				<div class="flex justify-between items-center mt-1 px-2">
 					<div class="text-xs text-gray-500">
-						{params.use_mlock ? 'Enabled' : 'Disabled'}
+						{params.use_mlock ? '启用' : '禁用'}
 					</div>
 
 					<div class=" pr-2">
@@ -1254,38 +1201,36 @@
 			{/if}
 		</div>
 
-		<div class=" py-0.5 w-full justify-between">
+		<div>
 			<Tooltip
-				content={$i18n.t(
-					'Set the number of worker threads used for computation. This option controls how many threads are used to process incoming requests concurrently. Increasing this value can improve performance under high concurrency workloads but may also consume more CPU resources.'
-				)}
+				content='设置用于计算的工作线程数量。该选项可控制并发处理传入请求的线程数量。增加该值可以提高高并发工作负载下的性能，但也可能消耗更多的 CPU 资源。'
 				placement="top-start"
 				className="inline-tooltip"
 			>
-				<div class="flex w-full justify-between">
-					<div class=" self-center text-xs font-medium">
-						{$i18n.t('num_thread (Ollama)')}
+				<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+					<div>
+						num_thread（Ollama）
 					</div>
 
 					<button
-						class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+						class='hover:text-black dark:hover:text-white'
 						type="button"
 						on:click={() => {
 							params.num_thread = (params?.num_thread ?? null) === null ? 2 : null;
 						}}
 					>
 						{#if (params?.num_thread ?? null) === null}
-							<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+							<span>默认</span>
 						{:else}
-							<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+							<span>自定义</span>
 						{/if}
 					</button>
 				</div>
 			</Tooltip>
 
 			{#if (params?.num_thread ?? null) !== null}
-				<div class="flex mt-0.5 space-x-2">
-					<div class=" flex-1">
+				<div class="flex mt-1 space-x-2 px-2">
+					<div class="flex-1">
 						<input
 							id="steps-range"
 							type="range"
@@ -1310,38 +1255,36 @@
 			{/if}
 		</div>
 
-		<div class=" py-0.5 w-full justify-between">
+		<div>
 			<Tooltip
-				content={$i18n.t(
-					'Set the number of layers, which will be off-loaded to GPU. Increasing this value can significantly improve performance for models that are optimized for GPU acceleration but may also consume more power and GPU resources.'
-				)}
+				content='设置将加载到 GPU 的层数。增加此值可以显著提高对 GPU 优化的模型的性能，但也可能增加功耗和使用更多 GPU 资源。'
 				placement="top-start"
 				className="inline-tooltip"
 			>
-				<div class="flex w-full justify-between">
-					<div class=" self-center text-xs font-medium">
-						{$i18n.t('num_gpu (Ollama)')}
+				<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+					<div>
+						num_gpu (Ollama)
 					</div>
 
 					<button
-						class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+						class='hover:text-black dark:hover:text-white'
 						type="button"
 						on:click={() => {
 							params.num_gpu = (params?.num_gpu ?? null) === null ? 0 : null;
 						}}
 					>
 						{#if (params?.num_gpu ?? null) === null}
-							<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+							<span>默认</span>
 						{:else}
-							<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+							<span>自定义</span>
 						{/if}
 					</button>
 				</div>
 			</Tooltip>
 
 			{#if (params?.num_gpu ?? null) !== null}
-				<div class="flex mt-0.5 space-x-2">
-					<div class=" flex-1">
+				<div class="flex mt-1 space-x-2 px-2">
+					<div class="flex-1">
 						<input
 							id="steps-range"
 							type="range"
@@ -1366,21 +1309,21 @@
 			{/if}
 		</div>
 
-		<!-- <div class=" py-0.5 w-full justify-between">
-			<div class="flex w-full justify-between">
-				<div class=" self-center text-xs font-medium">{$i18n.t('Template')}</div>
+		<!-- <div>
+			<div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+				<div>{$i18n.t('Template')}</div>
 
 				<button
-					class="p-1 px-3 text-xs flex rounded-sm transition shrink-0 outline-hidden"
+					class='hover:text-black dark:hover:text-white'
 					type="button"
 					on:click={() => {
 						params.template = (params?.template ?? null) === null ? '' : null;
 					}}
 				>
 					{#if (params?.template ?? null) === null}
-						<span class="ml-2 self-center">{$i18n.t('Default')}</span>
+						<span>默认</span>
 					{:else}
-						<span class="ml-2 self-center">{$i18n.t('Custom')}</span>
+						<span>{$i18n.t('Custom')}</span>
 					{/if}
 				</button>
 			</div>

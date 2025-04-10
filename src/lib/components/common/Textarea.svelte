@@ -3,12 +3,13 @@
 
 	export let value = '';
 	export let placeholder = '';
-	export let rows = 1;
+	export let rows = 2;
 	export let required = false;
-	export let className =
-		'w-full rounded-lg px-3 py-2 text-sm bg-gray-50 dark:text-gray-300 dark:bg-gray-850 outline-hidden  h-full';
+	export let className = '';
 
 	let textareaElement;
+
+	const basicClass = 'w-full rounded-lg px-3 py-2 text-sm bg-gray-50 border border-gray-200 dark:border-gray-800 dark:text-gray-300 dark:bg-gray-850 outline-hidden h-full resize-none';
 
 	// Adjust height on mount and after setting the element.
 	onMount(async () => {
@@ -38,8 +39,7 @@
 	bind:this={textareaElement}
 	bind:value
 	{placeholder}
-	class={className}
-	style="field-sizing: content;"
+	class={`${basicClass} ${className}`}
 	{rows}
 	{required}
 	on:input={(e) => {
