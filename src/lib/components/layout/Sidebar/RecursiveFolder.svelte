@@ -1,7 +1,6 @@
 <script>
-	import { getContext, createEventDispatcher, onMount, onDestroy, tick } from 'svelte';
+	import { createEventDispatcher, onMount, onDestroy, tick } from 'svelte';
 
-	const i18n = getContext('i18n');
 	const dispatch = createEventDispatcher();
 
 	import DOMPurify from 'dompurify';
@@ -245,14 +244,14 @@
 		});
 
 		if (res) {
-			toast.success($i18n.t('Folder deleted successfully'));
+			toast.success('分组删除成功');
 			dispatch('update');
 		}
 	};
 
 	const nameUpdateHandler = async () => {
 		if (name === '') {
-			toast.error($i18n.t('Folder name cannot be empty'));
+			toast.error('分组名称不能为空');
 			return;
 		}
 
@@ -275,7 +274,7 @@
 
 		if (res) {
 			folders[folderId].name = name;
-			toast.success($i18n.t('Folder name updated successfully'));
+			toast.success('分组名称更新成功。');
 			dispatch('update');
 		}
 	};
@@ -334,16 +333,14 @@
 
 <DeleteConfirmDialog
 	bind:show={showDeleteConfirm}
-	title={$i18n.t('Delete folder?')}
+	title='删除分组？'
 	on:confirm={() => {
 		deleteHandler();
 	}}
 >
 	<div class=" text-sm text-gray-700 dark:text-gray-300 flex-1 line-clamp-3">
 		{@html DOMPurify.sanitize(
-			$i18n.t('This will delete <strong>{{NAME}}</strong> and <strong>all its contents</strong>.', {
-				NAME: folders[folderId].name
-			})
+			`这将删除<strong>${folders[folderId].name}</strong>及其<strong>所有内容</strong>。`
 		)}
 	</div>
 </DeleteConfirmDialog>
@@ -382,16 +379,16 @@
 		<div class="w-full group">
 			<button
 				id="folder-{folderId}-button"
-				class="relative w-full py-1.5 px-2 rounded-md flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-500 font-medium hover:bg-gray-100 dark:hover:bg-gray-900 transition"
+				class="relative w-full py-1.5 px-2 rounded-md flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-500 font-medium hover:bg-white/60 dark:hover:bg-gray-850 transition"
 				on:dblclick={() => {
 					editHandler();
 				}}
 			>
-				<div class="text-gray-300 dark:text-gray-600">
+				<div class="text-gray-500 dark:text-gray-600">
 					{#if open}
-						<ChevronDown className=" size-3" strokeWidth="2.5" />
+						<ChevronDown className="size-3" strokeWidth="2.5" />
 					{:else}
-						<ChevronRight className=" size-3" strokeWidth="2.5" />
+						<ChevronRight className="size-3" strokeWidth="2.5" />
 					{/if}
 				</div>
 

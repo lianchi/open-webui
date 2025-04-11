@@ -114,46 +114,52 @@ DEFAULT_CONFIG = {
         "prompt_suggestions": [
             {
                 "title": [
-                    "Help me study",
-                    "vocabulary for a college entrance exam",
+                    "新员工入职流程",
+                    "在研究所中",
                 ],
-                "content": "Help me study vocabulary: write a sentence for me to fill in the blank, and I'll try to pick the correct option.",
+                "content": "请问研究所的新员工入职流程是怎样的？有哪些注意事项？",
             },
             {
                 "title": [
-                    "Give me ideas",
-                    "for what to do with my kids' art",
+                    "合同流程",
+                    "在研究所中",
                 ],
-                "content": "What are 5 creative things I could do with my kids' art? I don't want to throw them away, but it's also so much clutter.",
-            },
-            {
-                "title": ["Tell me a fun fact", "about the Roman Empire"],
-                "content": "Tell me a random fun fact about the Roman Empire",
+                "content": "研究所的合同流程是如何运作的？需要哪些步骤和文件？",
             },
             {
                 "title": [
-                    "Show me a code snippet",
-                    "of a website's sticky header",
+                    "研究项目的财务管理",
+                    "最佳实践",
                 ],
-                "content": "Show me a code snippet of a website's sticky header in CSS and JavaScript.",
+                "content": "在研究项目中，如何有效管理财务？有哪些最佳实践可以遵循？",
             },
             {
                 "title": [
-                    "Explain options trading",
-                    "if I'm familiar with buying and selling stocks",
+                    "法律合规要求",
+                    "针对研究机构",
                 ],
-                "content": "Explain options trading in simple terms if I'm familiar with buying and selling stocks.",
-            },
-            {
-                "title": ["Overcome procrastination", "give me tips"],
-                "content": "Could you start by asking me about instances when I procrastinate the most and then give me some suggestions to overcome it?",
+                "content": "研究机构需要遵守哪些法律合规要求？如何确保合规性？",
             },
             {
                 "title": [
-                    "Grammar check",
-                    "rewrite it for better readability ",
+                    "研究拨款的预算模板",
+                    "如何制定",
                 ],
-                "content": 'Check the following sentence for grammar and clarity: "[sentence]". Rewrite it for better readability while maintaining its original meaning.',
+                "content": "如何制定一个研究拨款的预算模板？需要包含哪些类别和费用？",
+            },
+            {
+                "title": [
+                    "吸引顶尖人才的招聘策略",
+                    "在研究所中",
+                ],
+                "content": "在研究所中，如何吸引顶尖人才？有哪些有效的招聘策略？",
+            },
+            {
+                "title": [
+                    "克服资金挑战",
+                    "在研究项目中",
+                ],
+                "content": "在研究项目中，如何克服常见的资金挑战？可以采取哪些策略？",
             },
         ],
     },
@@ -934,31 +940,53 @@ DEFAULT_PROMPT_SUGGESTIONS = PersistentConfig(
     "ui.prompt_suggestions",
     [
         {
-            "title": ["Help me study", "vocabulary for a college entrance exam"],
-            "content": "Help me study vocabulary: write a sentence for me to fill in the blank, and I'll try to pick the correct option.",
-        },
-        {
-            "title": ["Give me ideas", "for what to do with my kids' art"],
-            "content": "What are 5 creative things I could do with my kids' art? I don't want to throw them away, but it's also so much clutter.",
-        },
-        {
-            "title": ["Tell me a fun fact", "about the Roman Empire"],
-            "content": "Tell me a random fun fact about the Roman Empire",
-        },
-        {
-            "title": ["Show me a code snippet", "of a website's sticky header"],
-            "content": "Show me a code snippet of a website's sticky header in CSS and JavaScript.",
+            "title": [
+                    "新员工入职流程",
+                    "在研究所中",
+                ],
+            "content": "请问研究所的新员工入职流程是怎样的？有哪些注意事项？",
         },
         {
             "title": [
-                "Explain options trading",
-                "if I'm familiar with buying and selling stocks",
-            ],
-            "content": "Explain options trading in simple terms if I'm familiar with buying and selling stocks.",
+                    "合同流程",
+                    "在研究所中",
+                ],
+            "content": "研究所的合同流程是如何运作的？需要哪些步骤和文件？",
         },
         {
-            "title": ["Overcome procrastination", "give me tips"],
-            "content": "Could you start by asking me about instances when I procrastinate the most and then give me some suggestions to overcome it?",
+            "title": [
+                    "研究项目的财务管理",
+                    "最佳实践",
+                ],
+            "content": "在研究项目中，如何有效管理财务？有哪些最佳实践可以遵循？",
+        },
+        {
+            "title": [
+                    "法律合规要求",
+                    "针对研究机构",
+                ],
+            "content": "研究机构需要遵守哪些法律合规要求？如何确保合规性？",
+        },
+        {
+            "title": [
+                    "研究拨款的预算模板",
+                    "如何制定",
+                ],
+            "content": "如何制定一个研究拨款的预算模板？需要包含哪些类别和费用？",
+        },
+        {
+            "title": [
+                    "吸引顶尖人才的招聘策略",
+                    "在研究所中",
+                ],
+            "content": "在研究所中，如何吸引顶尖人才？有哪些有效的招聘策略？",
+        },
+        {
+            "title": [
+                    "克服资金挑战",
+                    "在研究项目中",
+                ],
+            "content": "在研究项目中，如何克服常见的资金挑战？可以采取哪些策略？",
         },
     ],
 )

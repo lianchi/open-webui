@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	import { showArchivedChats, showSidebar, user } from '$lib/stores';
@@ -11,7 +10,6 @@
 	import MenuLines from '../icons/MenuLines.svelte';
 	import PencilSquare from '../icons/PencilSquare.svelte';
 
-	const i18n = getContext('i18n');
 
 	export let channel;
 </script>
@@ -42,11 +40,7 @@
 				</button>
 			</div>
 
-			<div
-				class="flex-1 overflow-hidden max-w-full py-0.5
-			{$showSidebar ? 'ml-1' : ''}
-			"
-			>
+			<div class="flex-1 overflow-hidden max-w-full py-0.5 {$showSidebar ? 'ml-1' : ''} ">
 				{#if channel}
 					<div class="line-clamp-1 capitalize font-medium font-primary text-lg">
 						{channel.name}

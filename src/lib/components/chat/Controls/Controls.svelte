@@ -70,13 +70,13 @@
 		{#if $user?.role === 'admin' || $user?.permissions.chat?.controls}
 			<hr class="my-2 border-gray-50 dark:border-gray-700/10" />
 
-			<Collapsible title={$i18n.t('System Prompt')} open={true} buttonClassName="w-full">
-				<div class="" slot="content">
+			<Collapsible title='系统提示词' open={true} buttonClassName="w-full">
+				<div class="mt-1" slot="content">
 					<textarea
 						bind:value={params.system}
-						class="w-full text-xs py-1.5 bg-transparent outline-hidden resize-none"
+						class="w-full text-xs border rounded-lg border-gray-200 dark:border-gray-700 p-2 py-1.5 bg-transparent outline-hidden resize-none"
 						rows="4"
-						placeholder={$i18n.t('Enter system prompt')}
+						placeholder='系统提示词'
 					/>
 				</div>
 			</Collapsible>

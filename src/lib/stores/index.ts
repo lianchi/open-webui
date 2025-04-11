@@ -3,7 +3,7 @@ import type { Banner } from '$lib/types'
 import type { Socket } from 'socket.io-client'
 import type { Writable } from 'svelte/store'
 import { APP_NAME } from '$lib/constants'
-
+import { onMount } from 'svelte'
 import emojiShortCodes from '$lib/emoji-shortcodes.json'
 import { writable } from 'svelte/store'
 

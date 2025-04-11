@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { getAllTags } from '$lib/apis/chats';
 	import { tags } from '$lib/stores';
-	import { getContext, createEventDispatcher, onMount, onDestroy, tick } from 'svelte';
+	import { createEventDispatcher, onMount, onDestroy, tick } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import XMark from '$lib/components/icons/XMark.svelte';
 
 	const dispatch = createEventDispatcher();
-	const i18n = getContext('i18n');
 
 	export let placeholder = '';
 	export let value = '';
 	export let showClearButton = false;
+	export let className = ''
 
 	let selectedIdx = 0;
 
@@ -20,7 +20,7 @@
 	let options = [
 		{
 			name: 'tag:',
-			description: $i18n.t('search for tags')
+			description: '搜索标签'
 		}
 	];
 	let focused = false;
@@ -37,7 +37,7 @@
 				...$tags,
 				{
 					id: 'none',
-					name: $i18n.t('Untagged')
+					name: '无标签'
 				}
 			].filter((tag) => {
 				const tagName = lastWord.slice(4);
@@ -88,8 +88,8 @@
 </script>
 
 <div class="px-1 mb-1 flex justify-center space-x-2 relative z-10" id="search-container">
-	<div class="flex w-full rounded-xl" id="chat-search">
-		<div class="self-center pl-3 py-2 rounded-l-xl bg-transparent">
+	<div class="flex w-full rounded-xl {className}" id="chat-search">
+		<div class="self-center pl-3 py-1 rounded-l-xl bg-transparent">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 20 20"
@@ -105,8 +105,8 @@
 		</div>
 
 		<input
-			class="w-full rounded-r-xl py-1.5 pl-2.5 text-sm bg-transparent dark:text-gray-300 outline-hidden"
-			placeholder={placeholder ? placeholder : $i18n.t('Search')}
+			class="w-full rounded-r-xl py-1 pl-2.5 text-sm bg-transparent dark:text-gray-300 outline-hidden"
+			placeholder={placeholder ? placeholder : '搜索'}
 			bind:value
 			on:input={() => {
 				dispatch('input');
@@ -151,7 +151,7 @@
 		{#if showClearButton && value}
 			<div class="self-center pr-2 pl-1.5 translate-y-[0.5px] rounded-l-xl bg-transparent">
 				<button
-					class="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition"
+					class="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-850 transition"
 					on:click={clearSearchInput}
 				>
 					<XMark className="size-3" strokeWidth="2" />
@@ -179,19 +179,16 @@
 					<div class="max-h-60 overflow-auto">
 						{#each filteredTags as tag, tagIdx}
 							<button
-								class=" px-1.5 py-0.5 flex gap-1 hover:bg-gray-100 dark:hover:bg-gray-900 w-full rounded {selectedIdx ===
+								class=" px-1.5 py-0.5 flex gap-1 hover:bg-gray-100 dark:hover:bg-gray-850 w-full rounded {selectedIdx ===
 								tagIdx
 									? 'bg-gray-100 dark:bg-gray-900'
 									: ''}"
 								id="search-tag-{tagIdx}"
 								on:click|stopPropagation={async () => {
 									const words = value.split(' ');
-
 									words.pop();
 									words.push(`tag:${tag.id} `);
-
 									value = words.join(' ');
-
 									dispatch('input');
 								}}
 							>
@@ -207,25 +204,22 @@
 					</div>
 				{:else if filteredOptions.length > 0}
 					<div class="px-1 font-medium dark:text-gray-300 text-gray-700 mb-1">
-						{$i18n.t('Search options')}
+						搜索选项
 					</div>
 
 					<div class=" max-h-60 overflow-auto">
 						{#each filteredOptions as option, optionIdx}
 							<button
-								class=" px-1.5 py-0.5 flex gap-1 hover:bg-gray-100 dark:hover:bg-gray-900 w-full rounded {selectedIdx ===
+								class=" px-1.5 py-0.5 flex gap-1 hover:bg-gray-100 dark:hover:bg-gray-850 w-full rounded {selectedIdx ===
 								optionIdx
 									? 'bg-gray-100 dark:bg-gray-900'
 									: ''}"
 								id="search-option-{optionIdx}"
 								on:click|stopPropagation={async () => {
 									const words = value.split(' ');
-
 									words.pop();
 									words.push('tag:');
-
 									value = words.join(' ');
-
 									dispatch('input');
 								}}
 							>

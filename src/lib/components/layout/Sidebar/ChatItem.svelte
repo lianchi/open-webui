@@ -249,10 +249,10 @@
 		<div
 			class=" w-full flex justify-between rounded-lg px-[11px] py-[6px] {id === $chatId ||
 			confirmEdit
-				? 'bg-gray-200 dark:bg-gray-900'
+				? 'bg-white/80 dark:bg-gray-900'
 				: selected
-					? 'bg-gray-100 dark:bg-gray-950'
-					: 'group-hover:bg-gray-100 dark:group-hover:bg-gray-950'}  whitespace-nowrap text-ellipsis"
+					? 'bg-white/60 dark:bg-gray-950'
+					: 'group-hover:bg-white/60 dark:group-hover:bg-gray-950'}  whitespace-nowrap text-ellipsis"
 		>
 			<input
 				use:focusEdit
@@ -266,10 +266,10 @@
 		<a
 			class=" w-full flex justify-between rounded-lg px-[11px] py-[6px] {id === $chatId ||
 			confirmEdit
-				? 'bg-gray-200 dark:bg-gray-900'
+				? 'bg-white/80 dark:bg-gray-900'
 				: selected
-					? 'bg-gray-100 dark:bg-gray-950'
-					: ' group-hover:bg-gray-100 dark:group-hover:bg-gray-950'}  whitespace-nowrap text-ellipsis"
+					? 'bg-white/60 dark:bg-gray-950'
+					: ' group-hover:bg-white/60 dark:group-hover:bg-gray-950'}  whitespace-nowrap text-ellipsis"
 			href="/c/{id}"
 			on:click={() => {
 				dispatch('select');
@@ -301,17 +301,13 @@
 
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div
-		class="
-        {id === $chatId || confirmEdit
-			? 'from-gray-200 dark:from-gray-900'
+		class="{id === $chatId || confirmEdit
+			? ''
 			: selected
-				? 'from-gray-100 dark:from-gray-950'
-				: 'invisible group-hover:visible from-gray-100 dark:from-gray-950'}
-            absolute {className === 'pr-2'
-			? 'right-[8px]'
-			: 'right-0'}  top-[4px] py-1 pr-0.5 mr-1.5 pl-5 bg-linear-to-l from-80%
-
-              to-transparent"
+				? ''
+				: 'invisible group-hover:visible '} absolute {className === 'pr-2'
+					? 'right-[8px]'
+					: 'right-0'}  top-[4px] py-1 pr-0.5 mr-1.5 pl-5"
 		on:mouseenter={(e) => {
 			mouseOver = true;
 		}}
@@ -320,12 +316,10 @@
 		}}
 	>
 		{#if confirmEdit}
-			<div
-				class="flex self-center items-center space-x-1.5 z-10 translate-y-[0.5px] -translate-x-[0.5px]"
-			>
-				<Tooltip content={$i18n.t('Confirm')}>
+			<div class="flex self-center items-center space-x-1.5 z-10 translate-y-[0.5px] -translate-x-[0.5px]">
+				<Tooltip content='确认'>
 					<button
-						class=" self-center dark:hover:text-white transition"
+						class="self-center dark:hover:text-white transition"
 						on:click={() => {
 							editChatTitle(id, chatTitle);
 							confirmEdit = false;
@@ -336,9 +330,9 @@
 					</button>
 				</Tooltip>
 
-				<Tooltip content={$i18n.t('Cancel')}>
+				<Tooltip content='取消'>
 					<button
-						class=" self-center dark:hover:text-white transition"
+						class="self-center dark:hover:text-white transition"
 						on:click={() => {
 							confirmEdit = false;
 							chatTitle = '';
@@ -350,7 +344,7 @@
 			</div>
 		{:else if shiftKey && mouseOver}
 			<div class=" flex items-center self-center space-x-1.5">
-				<Tooltip content={$i18n.t('Archive')} className="flex items-center">
+				<Tooltip content='归档' className="flex items-center">
 					<button
 						class=" self-center dark:hover:text-white transition"
 						on:click={() => {
@@ -362,7 +356,7 @@
 					</button>
 				</Tooltip>
 
-				<Tooltip content={$i18n.t('Delete')}>
+				<Tooltip content='删除'>
 					<button
 						class=" self-center dark:hover:text-white transition"
 						on:click={() => {

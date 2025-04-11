@@ -83,7 +83,7 @@
 					{#if title !== ''}
 						{title}
 					{:else}
-						{$i18n.t('Confirm your action')}
+						确定吗？
 					{/if}
 				</div>
 
@@ -92,13 +92,13 @@
 						{#if message !== ''}
 							{message}
 						{:else}
-							{$i18n.t('This action cannot be undone. Do you wish to continue?')}
+							此操作无法撤销。是否确认继续？
 						{/if}
 
 						{#if input}
 							<textarea
 								bind:value={inputValue}
-								placeholder={inputPlaceholder ? inputPlaceholder : $i18n.t('Enter your message')}
+								placeholder={inputPlaceholder ? inputPlaceholder : '输入您的消息'}
 								class="w-full mt-2 rounded-lg px-4 py-2 text-sm dark:text-gray-300 dark:bg-gray-900 outline-hidden resize-none"
 								rows="3"
 								required
@@ -107,9 +107,9 @@
 					</div>
 				</slot>
 
-				<div class="mt-6 flex justify-between gap-1.5">
+				<div class="mt-6 flex justify-between gap-4">
 					<button
-						class="bg-gray-100 hover:bg-gray-200 text-gray-800 dark:bg-gray-850 dark:hover:bg-gray-800 dark:text-white font-medium w-full py-2.5 rounded-lg transition"
+						class="bg-gray-100 hover:bg-gray-200 text-gray-800 dark:bg-gray-850 dark:hover:bg-gray-800 dark:text-white font-medium w-full py-1.5 rounded-lg transition"
 						on:click={() => {
 							show = false;
 							dispatch('cancel');
@@ -119,7 +119,7 @@
 						{cancelLabel}
 					</button>
 					<button
-						class="bg-gray-900 hover:bg-gray-850 text-gray-100 dark:bg-gray-100 dark:hover:bg-white dark:text-gray-800 font-medium w-full py-2.5 rounded-lg transition"
+						class="bg-primary hover:opacity-80 text-gray-100 font-medium w-full py-1.5 rounded-lg transition"
 						on:click={() => {
 							confirmHandler();
 						}}

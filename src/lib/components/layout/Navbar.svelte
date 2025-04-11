@@ -25,7 +25,6 @@
 	import AdjustmentsHorizontal from '../icons/AdjustmentsHorizontal.svelte';
 	import Map from '../icons/Map.svelte';
 	import { stringify } from 'postcss';
-	import PencilSquare from '../icons/PencilSquare.svelte';
 	import Plus from '../icons/Plus.svelte';
 
 	const i18n = getContext('i18n');
@@ -147,7 +146,7 @@
 					</Tooltip>
 				{/if}
 
-				<Tooltip content={$i18n.t('New Chat')}>
+				<Tooltip content="新对话">
 					<button
 						id="new-chat-button"
 						class=" flex {$showSidebar
@@ -156,39 +155,13 @@
 						on:click={() => {
 							initNewChat();
 						}}
-						aria-label="New Chat"
+						aria-label="新对话"
 					>
 						<div class=" m-auto self-center">
-							<PencilSquare className=" size-5" strokeWidth="2" />
+							<Plus className=" size-5" strokeWidth="2" />
 						</div>
 					</button>
 				</Tooltip>
-
-				{#if $user !== undefined}
-					<UserMenu
-						className="max-w-[200px]"
-						role={$user?.role}
-						on:show={(e) => {
-							if (e.detail === 'archived-chat') {
-								showArchivedChats.set(true);
-							}
-						}}
-					>
-						<button
-							class="select-none flex rounded-xl p-1.5 w-full hover:bg-gray-50 dark:hover:bg-gray-850 transition"
-							aria-label="User Menu"
-						>
-							<div class=" self-center">
-								<img
-									src={$user?.profile_image_url}
-									class="size-6 object-cover rounded-full"
-									alt="User profile"
-									draggable="false"
-								/>
-							</div>
-						</button>
-					</UserMenu>
-				{/if}
 			</div>
 		</div>
 	</div>

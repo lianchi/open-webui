@@ -492,11 +492,12 @@
 											<Tooltip
 												content={$user?.role === 'admin' ? (item?.value ?? '') : ''}
 												placement="top-start"
+												className="flex items-center"
 											>
 												<img
-													src={item.model?.info?.meta?.profile_image_url ?? '/static/favicon.png'}
-													alt="Model"
-													class="rounded-full size-5 flex items-center mr-2"
+													src={item.model?.info?.meta?.profile_image_url ?? '/static/favicon.svg'}
+													alt="模型"
+													class="h-4 flex items-center mr-2"
 												/>
 
 												<div class="flex items-center line-clamp-1">

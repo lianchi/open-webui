@@ -964,13 +964,13 @@ export const getTimeRange = (timestamp) => {
 	const dateYear = date.getFullYear();
 
 	if (nowYear === dateYear && nowMonth === dateMonth && nowDate === dateDate) {
-		return 'Today';
+		return '今天';
 	} else if (nowYear === dateYear && nowMonth === dateMonth && nowDate - dateDate === 1) {
-		return 'Yesterday';
+		return '昨天';
 	} else if (diffDays <= 7) {
-		return 'Previous 7 days';
+		return '过去 7 天';
 	} else if (diffDays <= 30) {
-		return 'Previous 30 days';
+		return '过去 30 天';
 	} else if (nowYear === dateYear) {
 		return date.toLocaleString('default', { month: 'long' });
 	} else {

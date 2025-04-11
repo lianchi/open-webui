@@ -23,7 +23,7 @@
   import AdjustmentsHorizontal from '../icons/AdjustmentsHorizontal.svelte'
   import MenuLines from '../icons/MenuLines.svelte'
 
-  import PencilSquare from '../icons/PencilSquare.svelte'
+  import Plus from '../icons/Plus.svelte'
 
   export let initNewChat: Function
   export let title: string = $WEBUI_NAME
@@ -114,7 +114,7 @@
             }}
             aria-label='对话高级设置'
           >
-            <div class=' m-auto self-center'>
+            <div class='m-auto self-center'>
               <AdjustmentsHorizontal className=' size-5' strokeWidth='0.5' />
             </div>
           </button>
@@ -132,36 +132,10 @@
             aria-label='新对话'
           >
             <div class='m-auto self-center'>
-              <PencilSquare className='size-5' strokeWidth='2' />
+              <Plus className='size-5' strokeWidth='2' />
             </div>
           </button>
         </Tooltip>
-
-        {#if $user !== undefined && $user !== null}
-          <UserMenu
-            className='max-w-[200px]'
-            role={$user?.role}
-            on:show={(e) => {
-              if (e.detail === 'archived-chat') {
-                showArchivedChats.set(true)
-              }
-            }}
-          >
-            <button
-              class='select-none flex rounded-xl p-1.5 w-full hover:bg-gray-50 dark:hover:bg-gray-850 transition'
-              aria-label='用户菜单'
-            >
-              <div class='self-center'>
-                <img
-                  src={$user?.profile_image_url}
-                  class='size-6 object-cover rounded-full'
-                  alt='用户信息'
-                  draggable='false'
-                />
-              </div>
-            </button>
-          </UserMenu>
-        {/if}
       </div>
     </div>
   </div>

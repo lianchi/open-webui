@@ -120,8 +120,8 @@
 								>
 									<img
 										crossorigin="anonymous"
-										src={model?.info?.meta?.profile_image_url ?? `${WEBUI_BASE_URL}/static/favicon.png`}
-										class=" w-20 h-20"
+										src={model?.info?.meta?.profile_image_url ?? `${WEBUI_BASE_URL}/static/favicon.svg`}
+										class="h-20"
 										alt="logo"
 										draggable="false"
 									/>

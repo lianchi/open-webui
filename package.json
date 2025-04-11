@@ -1,7 +1,7 @@
 {
-  "name": "open-webui",
+  "name": "tianyi-xz",
   "type": "module",
-  "version": "0.6.2",
+  "version": "0.1.0",
   "private": true,
   "engines": {
     "node": ">=18.13.0 <=22.x.x",

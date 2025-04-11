@@ -32,7 +32,8 @@
 <div class='flex flex-col w-full items-start'>
   {#each selectedModels as selectedModel, selectedModelIdx}
     <div class='flex w-full max-w-fit'>
-      <div class='overflow-hidden w-full'>
+      <div class='overflow-hidden w-full flex items-center'>
+        <div class='text-gray-500 text-sm'>模型选择：</div>
         <div class='mr-1 max-w-full'>
           <Selector
             id={`${selectedModelIdx}`}
@@ -53,11 +54,11 @@
 
       {#if selectedModelIdx === 0}
         <div
-          class='  self-center mx-1 disabled:text-gray-600 disabled:hover:text-gray-600 -translate-y-[0.5px]'
+          class='self-center mx-1 disabled:text-gray-600 disabled:hover:text-gray-600 -translate-y-[0.5px]'
         >
           <Tooltip content='添加模型'>
             <button
-              class=' '
+              class='p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-850'
               {disabled}
               on:click={() => {
                 selectedModels = [...selectedModels, '']
@@ -70,7 +71,7 @@
                 viewBox='0 0 24 24'
                 stroke-width='2'
                 stroke='currentColor'
-                class='size-3.5'
+                class='size-4'
               >
                 <path stroke-linecap='round' stroke-linejoin='round' d='M12 6v12m6-6H6' />
               </svg>

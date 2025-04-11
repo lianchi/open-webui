@@ -417,22 +417,20 @@
 										<div class="flex border-b border-gray-100 dark:border-gray-850 w-full">
 											<input
 												class="px-3 py-1.5 text-xs w-full bg-transparent outline-hidden border-r border-gray-100 dark:border-gray-850"
-												placeholder={$i18n.t('Title (e.g. Tell me a fun fact)')}
+												placeholder='标题（例如：新员工入职流程是怎样的？）'
 												bind:value={prompt.title[0]}
 											/>
 
 											<input
 												class="px-3 py-1.5 text-xs w-full bg-transparent outline-hidden border-r border-gray-100 dark:border-gray-850"
-												placeholder={$i18n.t('Subtitle (e.g. about the Roman Empire)')}
+												placeholder='副标题（例如：针对国企研究所而言）'
 												bind:value={prompt.title[1]}
 											/>
 										</div>
 
 										<textarea
 											class="px-3 py-1.5 text-xs w-full bg-transparent outline-hidden border-r border-gray-100 dark:border-gray-850 resize-none"
-											placeholder={$i18n.t(
-												'Prompt (e.g. Tell me a fun fact about the Roman Empire)'
-											)}
+											placeholder='提示词（例如：请问研究所的新员工入职流程是怎样的？有哪些注意事项？）'
 											rows="3"
 											bind:value={prompt.content}
 										/>
