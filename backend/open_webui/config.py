@@ -114,52 +114,46 @@ DEFAULT_CONFIG = {
         "prompt_suggestions": [
             {
                 "title": [
-                    "新员工入职流程",
-                    "在研究所中",
+                    "Help me study",
+                    "vocabulary for a college entrance exam",
                 ],
-                "content": "请问研究所的新员工入职流程是怎样的？有哪些注意事项？",
+                "content": "Help me study vocabulary: write a sentence for me to fill in the blank, and I'll try to pick the correct option.",
             },
             {
                 "title": [
-                    "合同流程",
-                    "在研究所中",
+                    "Give me ideas",
+                    "for what to do with my kids' art",
                 ],
-                "content": "研究所的合同流程是如何运作的？需要哪些步骤和文件？",
+                "content": "What are 5 creative things I could do with my kids' art? I don't want to throw them away, but it's also so much clutter.",
+            },
+            {
+                "title": ["Tell me a fun fact", "about the Roman Empire"],
+                "content": "Tell me a random fun fact about the Roman Empire",
             },
             {
                 "title": [
-                    "研究项目的财务管理",
-                    "最佳实践",
+                    "Show me a code snippet",
+                    "of a website's sticky header",
                 ],
-                "content": "在研究项目中，如何有效管理财务？有哪些最佳实践可以遵循？",
+                "content": "Show me a code snippet of a website's sticky header in CSS and JavaScript.",
             },
             {
                 "title": [
-                    "法律合规要求",
-                    "针对研究机构",
+                    "Explain options trading",
+                    "if I'm familiar with buying and selling stocks",
                 ],
-                "content": "研究机构需要遵守哪些法律合规要求？如何确保合规性？",
+                "content": "Explain options trading in simple terms if I'm familiar with buying and selling stocks.",
+            },
+            {
+                "title": ["Overcome procrastination", "give me tips"],
+                "content": "Could you start by asking me about instances when I procrastinate the most and then give me some suggestions to overcome it?",
             },
             {
                 "title": [
-                    "研究拨款的预算模板",
-                    "如何制定",
+                    "Grammar check",
+                    "rewrite it for better readability ",
                 ],
-                "content": "如何制定一个研究拨款的预算模板？需要包含哪些类别和费用？",
-            },
-            {
-                "title": [
-                    "吸引顶尖人才的招聘策略",
-                    "在研究所中",
-                ],
-                "content": "在研究所中，如何吸引顶尖人才？有哪些有效的招聘策略？",
-            },
-            {
-                "title": [
-                    "克服资金挑战",
-                    "在研究项目中",
-                ],
-                "content": "在研究项目中，如何克服常见的资金挑战？可以采取哪些策略？",
+                "content": 'Check the following sentence for grammar and clarity: "[sentence]". Rewrite it for better readability while maintaining its original meaning.',
             },
         ],
     },
@@ -207,6 +201,10 @@ def save_config(config):
 
 T = TypeVar("T")
 
+ENABLE_PERSISTENT_CONFIG = (
+    os.environ.get("ENABLE_PERSISTENT_CONFIG", "True").lower() == "true"
+)
+
 
 class PersistentConfig(Generic[T]):
     def __init__(self, env_name: str, config_path: str, env_value: T):
@@ -214,7 +212,7 @@ class PersistentConfig(Generic[T]):
         self.config_path = config_path
         self.env_value = env_value
         self.config_value = get_config_value(config_path)
-        if self.config_value is not None:
+        if self.config_value is not None and ENABLE_PERSISTENT_CONFIG:
             log.info(f"'{env_name}' loaded from the latest database entry")
             self.value = self.config_value
         else:
@@ -462,6 +460,12 @@ OAUTH_SCOPES = PersistentConfig(
     os.environ.get("OAUTH_SCOPES", "openid email profile"),
 )
 
+OAUTH_CODE_CHALLENGE_METHOD = PersistentConfig(
+    "OAUTH_CODE_CHALLENGE_METHOD",
+    "oauth.oidc.code_challenge_method",
+    os.environ.get("OAUTH_CODE_CHALLENGE_METHOD", None),
+)
+
 OAUTH_PROVIDER_NAME = PersistentConfig(
     "OAUTH_PROVIDER_NAME",
     "oauth.oidc.provider_name",
@@ -566,7 +570,7 @@ def load_oauth_providers():
                 name="microsoft",
                 client_id=MICROSOFT_CLIENT_ID.value,
                 client_secret=MICROSOFT_CLIENT_SECRET.value,
-                server_metadata_url=f"https://login.microsoftonline.com/{MICROSOFT_CLIENT_TENANT_ID.value}/v2.0/.well-known/openid-configuration",
+                server_metadata_url=f"https://login.microsoftonline.com/{MICROSOFT_CLIENT_TENANT_ID.value}/v2.0/.well-known/openid-configuration?appid={MICROSOFT_CLIENT_ID.value}",
                 client_kwargs={
                     "scope": MICROSOFT_OAUTH_SCOPE.value,
                 },
@@ -607,14 +611,27 @@ def load_oauth_providers():
     ):
 
         def oidc_oauth_register(client):
+            client_kwargs = {
+                "scope": OAUTH_SCOPES.value,
+            }
+
+            if (
+                OAUTH_CODE_CHALLENGE_METHOD.value
+                and OAUTH_CODE_CHALLENGE_METHOD.value == "S256"
+            ):
+                client_kwargs["code_challenge_method"] = "S256"
+            elif OAUTH_CODE_CHALLENGE_METHOD.value:
+                raise Exception(
+                    'Code challenge methods other than "%s" not supported. Given: "%s"'
+                    % ("S256", OAUTH_CODE_CHALLENGE_METHOD.value)
+                )
+
             client.register(
                 name="oidc",
                 client_id=OAUTH_CLIENT_ID.value,
                 client_secret=OAUTH_CLIENT_SECRET.value,
                 server_metadata_url=OPENID_PROVIDER_URL.value,
-                client_kwargs={
-                    "scope": OAUTH_SCOPES.value,
-                },
+                client_kwargs=client_kwargs,
                 redirect_uri=OPENID_REDIRECT_URI.value,
             )
 
@@ -940,53 +957,31 @@ DEFAULT_PROMPT_SUGGESTIONS = PersistentConfig(
     "ui.prompt_suggestions",
     [
         {
-            "title": [
-                    "新员工入职流程",
-                    "在研究所中",
-                ],
-            "content": "请问研究所的新员工入职流程是怎样的？有哪些注意事项？",
+            "title": ["Help me study", "vocabulary for a college entrance exam"],
+            "content": "Help me study vocabulary: write a sentence for me to fill in the blank, and I'll try to pick the correct option.",
+        },
+        {
+            "title": ["Give me ideas", "for what to do with my kids' art"],
+            "content": "What are 5 creative things I could do with my kids' art? I don't want to throw them away, but it's also so much clutter.",
+        },
+        {
+            "title": ["Tell me a fun fact", "about the Roman Empire"],
+            "content": "Tell me a random fun fact about the Roman Empire",
+        },
+        {
+            "title": ["Show me a code snippet", "of a website's sticky header"],
+            "content": "Show me a code snippet of a website's sticky header in CSS and JavaScript.",
         },
         {
             "title": [
-                    "合同流程",
-                    "在研究所中",
-                ],
-            "content": "研究所的合同流程是如何运作的？需要哪些步骤和文件？",
+                "Explain options trading",
+                "if I'm familiar with buying and selling stocks",
+            ],
+            "content": "Explain options trading in simple terms if I'm familiar with buying and selling stocks.",
         },
         {
-            "title": [
-                    "研究项目的财务管理",
-                    "最佳实践",
-                ],
-            "content": "在研究项目中，如何有效管理财务？有哪些最佳实践可以遵循？",
-        },
-        {
-            "title": [
-                    "法律合规要求",
-                    "针对研究机构",
-                ],
-            "content": "研究机构需要遵守哪些法律合规要求？如何确保合规性？",
-        },
-        {
-            "title": [
-                    "研究拨款的预算模板",
-                    "如何制定",
-                ],
-            "content": "如何制定一个研究拨款的预算模板？需要包含哪些类别和费用？",
-        },
-        {
-            "title": [
-                    "吸引顶尖人才的招聘策略",
-                    "在研究所中",
-                ],
-            "content": "在研究所中，如何吸引顶尖人才？有哪些有效的招聘策略？",
-        },
-        {
-            "title": [
-                    "克服资金挑战",
-                    "在研究项目中",
-                ],
-            "content": "在研究项目中，如何克服常见的资金挑战？可以采取哪些策略？",
+            "title": ["Overcome procrastination", "give me tips"],
+            "content": "Could you start by asking me about instances when I procrastinate the most and then give me some suggestions to overcome it?",
         },
     ],
 )
@@ -1067,6 +1062,22 @@ USER_PERMISSIONS_CHAT_EDIT = (
     os.environ.get("USER_PERMISSIONS_CHAT_EDIT", "True").lower() == "true"
 )
 
+USER_PERMISSIONS_CHAT_STT = (
+    os.environ.get("USER_PERMISSIONS_CHAT_STT", "True").lower() == "true"
+)
+
+USER_PERMISSIONS_CHAT_TTS = (
+    os.environ.get("USER_PERMISSIONS_CHAT_TTS", "True").lower() == "true"
+)
+
+USER_PERMISSIONS_CHAT_CALL = (
+    os.environ.get("USER_PERMISSIONS_CHAT_CALL", "True").lower() == "true"
+)
+
+USER_PERMISSIONS_CHAT_MULTIPLE_MODELS = (
+    os.environ.get("USER_PERMISSIONS_CHAT_MULTIPLE_MODELS", "True").lower() == "true"
+)
+
 USER_PERMISSIONS_CHAT_TEMPORARY = (
     os.environ.get("USER_PERMISSIONS_CHAT_TEMPORARY", "True").lower() == "true"
 )
@@ -1075,6 +1086,7 @@ USER_PERMISSIONS_CHAT_TEMPORARY_ENFORCED = (
     os.environ.get("USER_PERMISSIONS_CHAT_TEMPORARY_ENFORCED", "False").lower()
     == "true"
 )
+
 
 USER_PERMISSIONS_FEATURES_DIRECT_TOOL_SERVERS = (
     os.environ.get("USER_PERMISSIONS_FEATURES_DIRECT_TOOL_SERVERS", "False").lower()
@@ -1114,6 +1126,10 @@ DEFAULT_USER_PERMISSIONS = {
         "file_upload": USER_PERMISSIONS_CHAT_FILE_UPLOAD,
         "delete": USER_PERMISSIONS_CHAT_DELETE,
         "edit": USER_PERMISSIONS_CHAT_EDIT,
+        "stt": USER_PERMISSIONS_CHAT_STT,
+        "tts": USER_PERMISSIONS_CHAT_TTS,
+        "call": USER_PERMISSIONS_CHAT_CALL,
+        "multiple_models": USER_PERMISSIONS_CHAT_MULTIPLE_MODELS,
         "temporary": USER_PERMISSIONS_CHAT_TEMPORARY,
         "temporary_enforced": USER_PERMISSIONS_CHAT_TEMPORARY_ENFORCED,
     },
@@ -1834,12 +1850,6 @@ RAG_FILE_MAX_SIZE = PersistentConfig(
     ),
 )
 
-ENABLE_RAG_WEB_LOADER_SSL_VERIFICATION = PersistentConfig(
-    "ENABLE_RAG_WEB_LOADER_SSL_VERIFICATION",
-    "rag.enable_web_loader_ssl_verification",
-    os.environ.get("ENABLE_RAG_WEB_LOADER_SSL_VERIFICATION", "True").lower() == "true",
-)
-
 RAG_EMBEDDING_ENGINE = PersistentConfig(
     "RAG_EMBEDDING_ENGINE",
     "rag.embedding_engine",
@@ -2004,16 +2014,20 @@ YOUTUBE_LOADER_PROXY_URL = PersistentConfig(
 )
 
 
-ENABLE_RAG_WEB_SEARCH = PersistentConfig(
-    "ENABLE_RAG_WEB_SEARCH",
+####################################
+# Web Search (RAG)
+####################################
+
+ENABLE_WEB_SEARCH = PersistentConfig(
+    "ENABLE_WEB_SEARCH",
     "rag.web.search.enable",
-    os.getenv("ENABLE_RAG_WEB_SEARCH", "False").lower() == "true",
+    os.getenv("ENABLE_WEB_SEARCH", "False").lower() == "true",
 )
 
-RAG_WEB_SEARCH_ENGINE = PersistentConfig(
-    "RAG_WEB_SEARCH_ENGINE",
+WEB_SEARCH_ENGINE = PersistentConfig(
+    "WEB_SEARCH_ENGINE",
     "rag.web.search.engine",
-    os.getenv("RAG_WEB_SEARCH_ENGINE", ""),
+    os.getenv("WEB_SEARCH_ENGINE", ""),
 )
 
 BYPASS_WEB_SEARCH_EMBEDDING_AND_RETRIEVAL = PersistentConfig(
@@ -2022,16 +2036,48 @@ BYPASS_WEB_SEARCH_EMBEDDING_AND_RETRIEVAL = PersistentConfig(
     os.getenv("BYPASS_WEB_SEARCH_EMBEDDING_AND_RETRIEVAL", "False").lower() == "true",
 )
 
+
+WEB_SEARCH_RESULT_COUNT = PersistentConfig(
+    "WEB_SEARCH_RESULT_COUNT",
+    "rag.web.search.result_count",
+    int(os.getenv("WEB_SEARCH_RESULT_COUNT", "3")),
+)
+
+
 # You can provide a list of your own websites to filter after performing a web search.
 # This ensures the highest level of safety and reliability of the information sources.
-RAG_WEB_SEARCH_DOMAIN_FILTER_LIST = PersistentConfig(
-    "RAG_WEB_SEARCH_DOMAIN_FILTER_LIST",
+WEB_SEARCH_DOMAIN_FILTER_LIST = PersistentConfig(
+    "WEB_SEARCH_DOMAIN_FILTER_LIST",
     "rag.web.search.domain.filter_list",
     [
         # "wikipedia.com",
         # "wikimedia.org",
         # "wikidata.org",
     ],
+)
+
+WEB_SEARCH_CONCURRENT_REQUESTS = PersistentConfig(
+    "WEB_SEARCH_CONCURRENT_REQUESTS",
+    "rag.web.search.concurrent_requests",
+    int(os.getenv("WEB_SEARCH_CONCURRENT_REQUESTS", "10")),
+)
+
+WEB_LOADER_ENGINE = PersistentConfig(
+    "WEB_LOADER_ENGINE",
+    "rag.web.loader.engine",
+    os.environ.get("WEB_LOADER_ENGINE", ""),
+)
+
+ENABLE_WEB_LOADER_SSL_VERIFICATION = PersistentConfig(
+    "ENABLE_WEB_LOADER_SSL_VERIFICATION",
+    "rag.web.loader.ssl_verification",
+    os.environ.get("ENABLE_WEB_LOADER_SSL_VERIFICATION", "True").lower() == "true",
+)
+
+WEB_SEARCH_TRUST_ENV = PersistentConfig(
+    "WEB_SEARCH_TRUST_ENV",
+    "rag.web.search.trust_env",
+    os.getenv("WEB_SEARCH_TRUST_ENV", "False").lower() == "true",
 )
 
 
@@ -2101,18 +2147,6 @@ SERPLY_API_KEY = PersistentConfig(
     os.getenv("SERPLY_API_KEY", ""),
 )
 
-TAVILY_API_KEY = PersistentConfig(
-    "TAVILY_API_KEY",
-    "rag.web.search.tavily_api_key",
-    os.getenv("TAVILY_API_KEY", ""),
-)
-
-TAVILY_EXTRACT_DEPTH = PersistentConfig(
-    "TAVILY_EXTRACT_DEPTH",
-    "rag.web.search.tavily_extract_depth",
-    os.getenv("TAVILY_EXTRACT_DEPTH", "basic"),
-)
-
 JINA_API_KEY = PersistentConfig(
     "JINA_API_KEY",
     "rag.web.search.jina_api_key",
@@ -2169,53 +2203,54 @@ PERPLEXITY_API_KEY = PersistentConfig(
     os.getenv("PERPLEXITY_API_KEY", ""),
 )
 
-RAG_WEB_SEARCH_RESULT_COUNT = PersistentConfig(
-    "RAG_WEB_SEARCH_RESULT_COUNT",
-    "rag.web.search.result_count",
-    int(os.getenv("RAG_WEB_SEARCH_RESULT_COUNT", "3")),
+SOUGOU_API_SID = PersistentConfig(
+    "SOUGOU_API_SID",
+    "rag.web.search.sougou_api_sid",
+    os.getenv("SOUGOU_API_SID", ""),
 )
 
-RAG_WEB_SEARCH_CONCURRENT_REQUESTS = PersistentConfig(
-    "RAG_WEB_SEARCH_CONCURRENT_REQUESTS",
-    "rag.web.search.concurrent_requests",
-    int(os.getenv("RAG_WEB_SEARCH_CONCURRENT_REQUESTS", "10")),
+SOUGOU_API_SK = PersistentConfig(
+    "SOUGOU_API_SK",
+    "rag.web.search.sougou_api_sk",
+    os.getenv("SOUGOU_API_SK", ""),
 )
 
-RAG_WEB_LOADER_ENGINE = PersistentConfig(
-    "RAG_WEB_LOADER_ENGINE",
-    "rag.web.loader.engine",
-    os.environ.get("RAG_WEB_LOADER_ENGINE", "safe_web"),
+TAVILY_API_KEY = PersistentConfig(
+    "TAVILY_API_KEY",
+    "rag.web.search.tavily_api_key",
+    os.getenv("TAVILY_API_KEY", ""),
 )
 
-RAG_WEB_SEARCH_TRUST_ENV = PersistentConfig(
-    "RAG_WEB_SEARCH_TRUST_ENV",
-    "rag.web.search.trust_env",
-    os.getenv("RAG_WEB_SEARCH_TRUST_ENV", "False").lower() == "true",
+TAVILY_EXTRACT_DEPTH = PersistentConfig(
+    "TAVILY_EXTRACT_DEPTH",
+    "rag.web.search.tavily_extract_depth",
+    os.getenv("TAVILY_EXTRACT_DEPTH", "basic"),
 )
 
-PLAYWRIGHT_WS_URI = PersistentConfig(
-    "PLAYWRIGHT_WS_URI",
-    "rag.web.loader.engine.playwright.ws.uri",
-    os.environ.get("PLAYWRIGHT_WS_URI", None),
+PLAYWRIGHT_WS_URL = PersistentConfig(
+    "PLAYWRIGHT_WS_URL",
+    "rag.web.loader.playwright_ws_url",
+    os.environ.get("PLAYWRIGHT_WS_URL", ""),
 )
 
 PLAYWRIGHT_TIMEOUT = PersistentConfig(
     "PLAYWRIGHT_TIMEOUT",
-    "rag.web.loader.engine.playwright.timeout",
-    int(os.environ.get("PLAYWRIGHT_TIMEOUT", "10")),
+    "rag.web.loader.playwright_timeout",
+    int(os.environ.get("PLAYWRIGHT_TIMEOUT", "10000")),
 )
 
 FIRECRAWL_API_KEY = PersistentConfig(
     "FIRECRAWL_API_KEY",
-    "firecrawl.api_key",
+    "rag.web.loader.firecrawl_api_key",
     os.environ.get("FIRECRAWL_API_KEY", ""),
 )
 
 FIRECRAWL_API_BASE_URL = PersistentConfig(
     "FIRECRAWL_API_BASE_URL",
-    "firecrawl.api_url",
+    "rag.web.loader.firecrawl_api_url",
     os.environ.get("FIRECRAWL_API_BASE_URL", "https://api.firecrawl.dev"),
 )
+
 
 ####################################
 # Images
@@ -2469,12 +2504,20 @@ WHISPER_MODEL_AUTO_UPDATE = (
     and os.environ.get("WHISPER_MODEL_AUTO_UPDATE", "").lower() == "true"
 )
 
+WHISPER_VAD_FILTER = PersistentConfig(
+    "WHISPER_VAD_FILTER",
+    "audio.stt.whisper_vad_filter",
+    os.getenv("WHISPER_VAD_FILTER", "False").lower() == "true",
+)
+
+
 # Add Deepgram configuration
 DEEPGRAM_API_KEY = PersistentConfig(
     "DEEPGRAM_API_KEY",
     "audio.stt.deepgram.api_key",
     os.getenv("DEEPGRAM_API_KEY", ""),
 )
+
 
 AUDIO_STT_OPENAI_API_BASE_URL = PersistentConfig(
     "AUDIO_STT_OPENAI_API_BASE_URL",
@@ -2498,6 +2541,24 @@ AUDIO_STT_MODEL = PersistentConfig(
     "AUDIO_STT_MODEL",
     "audio.stt.model",
     os.getenv("AUDIO_STT_MODEL", ""),
+)
+
+AUDIO_STT_AZURE_API_KEY = PersistentConfig(
+    "AUDIO_STT_AZURE_API_KEY",
+    "audio.stt.azure.api_key",
+    os.getenv("AUDIO_STT_AZURE_API_KEY", ""),
+)
+
+AUDIO_STT_AZURE_REGION = PersistentConfig(
+    "AUDIO_STT_AZURE_REGION",
+    "audio.stt.azure.region",
+    os.getenv("AUDIO_STT_AZURE_REGION", ""),
+)
+
+AUDIO_STT_AZURE_LOCALES = PersistentConfig(
+    "AUDIO_STT_AZURE_LOCALES",
+    "audio.stt.azure.locales",
+    os.getenv("AUDIO_STT_AZURE_LOCALES", ""),
 )
 
 AUDIO_TTS_OPENAI_API_BASE_URL = PersistentConfig(

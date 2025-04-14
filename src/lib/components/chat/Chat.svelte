@@ -19,6 +19,7 @@
     chatCompleted,
     generateMoACompletion,
     generateQueries,
+    getTaskIdsByChatId,
     stopTask,
   } from '$lib/apis'
 
@@ -133,7 +134,7 @@
     currentId: null,
   }
 
-  let taskId = null
+  let taskIds = null
 
   // Chat Input
   let prompt = ''
@@ -269,6 +270,27 @@
             message.statusHistory = [data]
           }
         }
+        else if (type === 'chat:completion') {
+          chatCompletionEventHandler(data, message, event.chat_id)
+        }
+        else if (type === 'chat:message:delta' || type === 'message') {
+          message.content += data.content
+        }
+        else if (type === 'chat:message' || type === 'replace') {
+          message.content = data.content
+        }
+        else if (type === 'chat:message:files' || type === 'files') {
+          message.files = data.files
+        }
+        else if (type === 'chat:title') {
+          chatTitle.set(data)
+          currentChatPage.set(1)
+          await chats.set(await getChatList(localStorage.token, $currentChatPage))
+        }
+        else if (type === 'chat:tags') {
+          chat = await getChatById(localStorage.token, $chatId)
+          allTags.set(await getAllTags(localStorage.token))
+        }
         else if (type === 'source' || type === 'citation') {
           if (data?.type === 'code_execution') {
             // Code execution; update existing code execution by ID, or add new one.
@@ -299,23 +321,22 @@
             }
           }
         }
-        else if (type === 'chat:completion') {
-          chatCompletionEventHandler(data, message, event.chat_id)
-        }
-        else if (type === 'chat:title') {
-          chatTitle.set(data)
-          currentChatPage.set(1)
-          await chats.set(await getChatList(localStorage.token, $currentChatPage))
-        }
-        else if (type === 'chat:tags') {
-          chat = await getChatById(localStorage.token, $chatId)
-          allTags.set(await getAllTags(localStorage.token))
-        }
-        else if (type === 'chat:message:delta' || type === 'message') {
-          message.content += data.content
-        }
-        else if (type === 'chat:message' || type === 'replace') {
-          message.content = data.content
+        else if (type === 'notification') {
+          const toastType = data?.type ?? 'info'
+          const toastContent = data?.content ?? ''
+
+          if (toastType === 'success') {
+            toast.success(toastContent)
+          }
+          else if (toastType === 'error') {
+            toast.error(toastContent)
+          }
+          else if (toastType === 'warning') {
+            toast.warning(toastContent)
+          }
+          else {
+            toast.info(toastContent)
+          }
         }
         else if (type === 'confirmation') {
           eventCallback = cb
@@ -352,23 +373,6 @@
           eventConfirmationMessage = data.message
           eventConfirmationInputPlaceholder = data.placeholder
           eventConfirmationInputValue = data?.value ?? ''
-        }
-        else if (type === 'notification') {
-          const toastType = data?.type ?? 'info'
-          const toastContent = data?.content ?? ''
-
-          if (toastType === 'success') {
-            toast.success(toastContent)
-          }
-          else if (toastType === 'error') {
-            toast.error(toastContent)
-          }
-          else if (toastType === 'warning') {
-            toast.warning(toastContent)
-          }
-          else {
-            toast.info(toastContent)
-          }
         }
         else {
           console.log('Unknown message type', data)
@@ -426,6 +430,7 @@
     if (!$chatId) {
       chatIdUnsubscriber = chatId.subscribe(async (value) => {
         if (!value) {
+          await tick() // Wait for DOM updates
           await initNewChat()
         }
       })
@@ -859,8 +864,21 @@
         await tick()
 
         if (history.currentId) {
-          history.messages[history.currentId].done = true
+          for (const message of Object.values(history.messages)) {
+            if (message.role === 'assistant') {
+              message.done = true
+            }
+          }
         }
+
+        const taskRes = await getTaskIdsByChatId(localStorage.token, $chatId).catch((error) => {
+          return null
+        })
+
+        if (taskRes) {
+          taskIds = taskRes.task_ids
+        }
+
         await tick()
 
         return true
@@ -933,7 +951,7 @@
       }
     }
 
-    taskId = null
+    taskIds = null
   }
 
   const chatActionHandler = async (chatId, actionId, modelId, responseMessageId, event = null) => {
@@ -1620,17 +1638,17 @@
         features: {
           image_generation:
             $config?.features?.enable_image_generation
-              && ($user?.role === 'admin' || $user?.permissions?.features?.image_generation)
+            && ($user?.role === 'admin' || $user?.permissions?.features?.image_generation)
               ? imageGenerationEnabled
               : false,
           code_interpreter:
             $config?.features?.enable_code_interpreter
-              && ($user?.role === 'admin' || $user?.permissions?.features?.code_interpreter)
+            && ($user?.role === 'admin' || $user?.permissions?.features?.code_interpreter)
               ? codeInterpreterEnabled
               : false,
           web_search:
             $config?.features?.enable_web_search
-              && ($user?.role === 'admin' || $user?.permissions?.features?.web_search)
+            && ($user?.role === 'admin' || $user?.permissions?.features?.web_search)
               ? webSearchEnabled || ($settings?.webSearch ?? false) === 'always'
               : false,
         },
@@ -1656,7 +1674,7 @@
             || (messages.length == 2
               && messages.at(0)?.role === 'system'
               && messages.at(1)?.role === 'user'))
-            && (selectedModels[0] === model.id || atSelectedModel !== undefined)
+          && (selectedModels[0] === model.id || atSelectedModel !== undefined)
           ? {
             background_tasks: {
               title_generation: $settings?.title?.auto ?? true,
@@ -1692,7 +1710,12 @@
         await handleOpenAIError(res.error, responseMessage)
       }
       else {
-        taskId = res.task_id
+        if (taskIds) {
+          taskIds.push(res.task_id)
+        }
+        else {
+          taskIds = [res.task_id]
+        }
       }
     }
 
@@ -1746,23 +1769,27 @@
   }
 
   const stopResponse = async () => {
-    if (taskId) {
-      const res = await stopTask(localStorage.token, taskId).catch((error) => {
-        toast.error(`${error}`)
-        return null
-      })
+    if (taskIds) {
+      for (const taskId of taskIds) {
+        const res = await stopTask(localStorage.token, taskId).catch((error) => {
+          toast.error(`${error}`)
+          return null
+        })
+      }
 
-      if (res) {
-        taskId = null
+      taskIds = null
 
-        const responseMessage = history.messages[history.currentId]
-        responseMessage.done = true
+      const responseMessage = history.messages[history.currentId]
 
-        history.messages[history.currentId] = responseMessage
+      // Set all response messages to done
+      for (const messageId of history.messages[responseMessage.parentId].childrenIds) {
+        history.messages[messageId].done = true
+      }
 
-        if (autoScroll) {
-          scrollToBottom()
-        }
+      history.messages[history.currentId] = responseMessage
+
+      if (autoScroll) {
+        scrollToBottom()
       }
     }
   }
@@ -1980,7 +2007,7 @@
     : ' '} w-full max-w-full flex flex-col"
   id='chat-container'
 >
-  {#if chatIdProp === '' || (!loading && chatIdProp)}
+  {#if !loading}
     {#if $settings?.backgroundImageUrl ?? null}
       <div
         class="absolute {$showSidebar
@@ -1994,70 +2021,27 @@
       />
     {/if}
 
-    <Navbar
-      bind:this={navbarElement}
-      chat={{
-        id: $chatId,
-        chat: {
-          title: $chatTitle,
-          models: selectedModels,
-          system: $settings.system ?? undefined,
-          params,
-          history,
-          timestamp: Date.now(),
-        },
-      }}
-      title={$chatTitle}
-      bind:selectedModels
-      shareEnabled={!!history.currentId}
-      {initNewChat}
-    />
-
     <PaneGroup direction='horizontal' class='w-full h-full'>
-      <Pane defaultSize={50} class='h-full flex w-full relative'>
-        {#if !history.currentId && !$chatId && selectedModels.length <= 1 && ($banners.length > 0 || ($config?.license_metadata?.type ?? null) === 'trial' || (($config?.license_metadata?.seats ?? null) !== null && $config?.user_count > $config?.license_metadata?.seats))}
-          <div class='absolute top-12 left-0 right-0 w-full z-30'>
-            <div class=' flex flex-col gap-1 w-full'>
-              {#if ($config?.license_metadata?.type ?? null) === 'trial'}
-                <Banner
-                  banner={{
-                    type: 'info',
-                    title: '试用许可证',
-                    content: '当前为试用许可证，请联系支持人员升级许可证。',
-                  }}
-                />
-              {/if}
-
-              {#if ($config?.license_metadata?.seats ?? null) !== null && $config?.user_count > $config?.license_metadata?.seats}
-                <Banner
-                  banner={{
-                    type: 'error',
-                    title: '许可证错误',
-                    content: '已达到最大授权人数，请联系支持人员提升授权人数。',
-                  }}
-                />
-              {/if}
-
-              {#each $banners.filter(b => (b.dismissible ? !JSON.parse(localStorage.getItem('dismissedBannerIds') ?? '[]').includes(b.id) : true)) as banner}
-                <Banner
-                  {banner}
-                  on:dismiss={(e) => {
-                    const bannerId = e.detail
-                    localStorage.setItem(
-                      'dismissedBannerIds',
-                      JSON.stringify(
-                        [
-                          bannerId,
-                          ...JSON.parse(localStorage.getItem('dismissedBannerIds') ?? '[]'),
-                        ].filter(id => $banners.find(b => b.id === id)),
-                      ),
-                    )
-                  }}
-                />
-              {/each}
-            </div>
-          </div>
-        {/if}
+      <Pane defaultSize={50} class='h-full flex relative max-w-full flex-col'>
+        <Navbar
+          bind:this={navbarElement}
+          chat={{
+            id: $chatId,
+            chat: {
+              title: $chatTitle,
+              models: selectedModels,
+              system: $settings.system ?? undefined,
+              params,
+              history,
+              timestamp: Date.now(),
+            },
+          }}
+          {history}
+          title={$chatTitle}
+          bind:selectedModels
+          shareEnabled={!!history.currentId}
+          {initNewChat}
+        />
 
         <div class='flex flex-col flex-auto z-10 w-full @container'>
           {#if $settings?.landingPageMode === 'chat' || createMessagesList(history, history.currentId).length > 0}
@@ -2095,6 +2079,7 @@
             <div class=' pb-[1rem]'>
               <MessageInput
                 {history}
+                {taskIds}
                 {selectedModels}
                 bind:files
                 bind:prompt

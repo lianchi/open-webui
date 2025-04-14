@@ -4,7 +4,9 @@
   import UserMenu from '$lib/components/layout/Sidebar/UserMenu.svelte'
 
   import {
+    banners,
     chatId,
+    config,
     mobile,
     settings,
     showArchivedChats,
@@ -19,6 +21,7 @@
   import { slide } from 'svelte/transition'
   import ModelSelector from '../chat/ModelSelector.svelte'
   import ShareChatModal from '../chat/ShareChatModal.svelte'
+  import Banner from '../common/Banner.svelte'
   import Tooltip from '../common/Tooltip.svelte'
   import AdjustmentsHorizontal from '../icons/AdjustmentsHorizontal.svelte'
   import MenuLines from '../icons/MenuLines.svelte'
@@ -30,6 +33,7 @@
   export let shareEnabled: boolean = false
 
   export let chat
+  export let history
   export let selectedModels
   export let showModelSelector = true
 
@@ -39,7 +43,7 @@
 
 <ShareChatModal bind:show={showShareChatModal} chatId={$chatId} />
 
-<nav class='sticky top-0 z-30 w-full px-1.5 py-1.5 -mb-8 flex items-center drag-region'>
+<nav class='sticky top-0 z-30 w-full py-1.5 -mb-8 flex flex-col items-center drag-region'>
   <div
     class=' bg-linear-to-b via-50% from-white via-white to-transparent dark:from-gray-900 dark:via-gray-900 dark:to-transparent pointer-events-none absolute inset-0 -bottom-7 z-[-1]'
   ></div>
@@ -139,4 +143,49 @@
       </div>
     </div>
   </div>
+
+  {#if !history.currentId && !$chatId && ($banners.length > 0 || ($config?.license_metadata?.type ?? null) === 'trial' || (($config?.license_metadata?.seats ?? null) !== null && $config?.user_count > $config?.license_metadata?.seats))}
+    <div class=' w-full z-30 mt-5'>
+      <div class=' flex flex-col gap-1 w-full'>
+        {#if ($config?.license_metadata?.type ?? null) === 'trial'}
+          <Banner
+            banner={{
+              type: 'info',
+              title: '试用许可证',
+              content: '您当前使用的是试用许可证。请联系支持以升级您的许可证。',
+            }}
+          />
+        {/if}
+
+        {#if ($config?.license_metadata?.seats ?? null) !== null && $config?.user_count > $config?.license_metadata?.seats}
+          <Banner
+            banner={{
+              type: 'error',
+              title: '许可证错误',
+              content: '您已超过许可证中的席位数。请联系支持以增加席位数。',
+            }}
+          />
+        {/if}
+
+        {#each $banners.filter(b => (b.dismissible ? !JSON.parse(localStorage.getItem('dismissedBannerIds') ?? '[]').includes(b.id) : true)) as banner}
+          <Banner
+            {banner}
+            on:dismiss={(e) => {
+              const bannerId = e.detail
+
+              localStorage.setItem(
+                'dismissedBannerIds',
+                JSON.stringify(
+                  [
+                    bannerId,
+                    ...JSON.parse(localStorage.getItem('dismissedBannerIds') ?? '[]'),
+                  ].filter(id => $banners.find(b => b.id === id)),
+                ),
+              )
+            }}
+          />
+        {/each}
+      </div>
+    </div>
+  {/if}
 </nav>

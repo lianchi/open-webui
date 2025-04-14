@@ -20,11 +20,12 @@
   import ChangelogModal from '$lib/components/ChangelogModal.svelte'
   import SettingsModal from '$lib/components/chat/SettingsModal.svelte'
 
+  import Spinner from '$lib/components/common/Spinner.svelte'
   import AccountPending from '$lib/components/layout/Overlay/AccountPending.svelte'
+
   import Sidebar from '$lib/components/layout/Sidebar.svelte'
 
   import UpdateInfoToast from '$lib/components/layout/UpdateInfoToast.svelte'
-
   import { WEBUI_VERSION } from '$lib/constants'
   import {
     banners,
@@ -234,56 +235,60 @@
 
 <div class='app relative'>
   <div class='text-gray-700 dark:text-gray-100 dark:bg-gray-900 h-screen max-h-[100dvh] overflow-auto flex flex-row justify-end'>
-    {#if loaded}
-      {#if !['user', 'admin'].includes($user?.role)}
-        <AccountPending />
-      {:else if localDBChats.length > 0}
-        <div class='fixed w-full h-full flex z-50'>
-          <div class='absolute w-full h-full backdrop-blur-md bg-white/20 dark:bg-gray-900/50 flex justify-center'>
-            <div class='m-auto pb-44 flex flex-col justify-center'>
-              <div class='max-w-md'>
-                <div class='text-center dark:text-white text-2xl font-medium z-50'>
-                  请注意
-                </div>
+    {#if !['user', 'admin'].includes($user?.role)}
+      <AccountPending />
+    {:else if localDBChats.length > 0}
+      <div class='fixed w-full h-full flex z-50'>
+        <div class='absolute w-full h-full backdrop-blur-md bg-white/20 dark:bg-gray-900/50 flex justify-center'>
+          <div class='m-auto pb-44 flex flex-col justify-center'>
+            <div class='max-w-md'>
+              <div class='text-center dark:text-white text-2xl font-medium z-50'>
+                请注意
+              </div>
 
-                <div class=' mt-4 text-center text-sm dark:text-gray-200 w-full'>
-                  我们不再支持将聊天记录直接保存到浏览器的存储空间。请点击下面的按钮下载并删除您的聊天记录。别担心，您可以轻松地将聊天记录重新导入到后台。
-                </div>
+              <div class=' mt-4 text-center text-sm dark:text-gray-200 w-full'>
+                我们不再支持将聊天记录直接保存到浏览器的存储空间。请点击下面的按钮下载并删除您的聊天记录。别担心，您可以轻松地将聊天记录重新导入到后台。
+              </div>
 
-                <div class='mt-6 mx-auto relative group w-fit'>
-                  <button
-                    class='relative z-20 flex px-5 py-2 rounded-full bg-white border border-gray-100 dark:border-none hover:bg-gray-100 transition font-medium text-sm'
-                    on:click={async () => {
-                      let blob = new Blob([JSON.stringify(localDBChats)], {
-                        type: 'application/json',
-                      })
-                      saveAs(blob, `chat-export-${Date.now()}.json`)
-                      const tx = DB.transaction('chats', 'readwrite')
-                      await Promise.all([tx.store.clear(), tx.done])
-                      await deleteDB('Chats')
-                      localDBChats = []
-                    }}
-                  >
-                    下载并删除
-                  </button>
+              <div class='mt-6 mx-auto relative group w-fit'>
+                <button
+                  class='relative z-20 flex px-5 py-2 rounded-full bg-white border border-gray-100 dark:border-none hover:bg-gray-100 transition font-medium text-sm'
+                  on:click={async () => {
+                    let blob = new Blob([JSON.stringify(localDBChats)], {
+                      type: 'application/json',
+                    })
+                    saveAs(blob, `chat-export-${Date.now()}.json`)
+                    const tx = DB.transaction('chats', 'readwrite')
+                    await Promise.all([tx.store.clear(), tx.done])
+                    await deleteDB('Chats')
+                    localDBChats = []
+                  }}
+                >
+                  下载并删除
+                </button>
 
-                  <button
-                    class='text-xs text-center w-full mt-2 text-gray-400 underline'
-                    on:click={async () => {
-                      localDBChats = []
-                    }}
-                  >
-                    关闭
-                  </button>
-                </div>
+                <button
+                  class='text-xs text-center w-full mt-2 text-gray-400 underline'
+                  on:click={async () => {
+                    localDBChats = []
+                  }}
+                >
+                  关闭
+                </button>
               </div>
             </div>
           </div>
         </div>
-      {/if}
+      </div>
+    {/if}
 
-      <Sidebar />
+    <Sidebar />
+    {#if loaded}
       <slot />
+    {:else}
+      <div class='w-full flex-1 h-full flex items-center justify-center'>
+        <Spinner />
+      </div>
     {/if}
   </div>
 </div>

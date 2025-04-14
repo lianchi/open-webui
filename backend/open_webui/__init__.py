@@ -17,7 +17,7 @@ def version_callback(value: bool):
     if value:
         from open_webui.env import VERSION
 
-        typer.echo(f"天熠小舟版本: {VERSION}")
+        typer.echo(f"Open WebUI version: {VERSION}")
         raise typer.Exit()
 
 
@@ -73,8 +73,15 @@ def serve(
             os.environ["LD_LIBRARY_PATH"] = ":".join(LD_LIBRARY_PATH)
 
     import open_webui.main  # we need set environment variables before importing main
+    from open_webui.env import UVICORN_WORKERS  # Import the workers setting
 
-    uvicorn.run(open_webui.main.app, host=host, port=port, forwarded_allow_ips="*")
+    uvicorn.run(
+        open_webui.main.app,
+        host=host,
+        port=port,
+        forwarded_allow_ips="*",
+        workers=UVICORN_WORKERS,
+    )
 
 
 @app.command()

@@ -45,72 +45,74 @@
             }))}
             showTemporaryChatControl={$user?.role === 'user'
               ? ($user?.permissions?.chat?.temporary ?? true)
-              && !($user?.permissions?.chat?.temporary_enforced ?? false)
+                && !($user?.permissions?.chat?.temporary_enforced ?? false)
               : true}
             bind:value={selectedModel}
           />
         </div>
       </div>
 
-      {#if selectedModelIdx === 0}
-        <div
-          class='self-center mx-1 disabled:text-gray-600 disabled:hover:text-gray-600 -translate-y-[0.5px]'
-        >
-          <Tooltip content='添加模型'>
-            <button
-              class='p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-850'
-              {disabled}
-              on:click={() => {
-                selectedModels = [...selectedModels, '']
-              }}
-              aria-label='添加模型'
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke-width='2'
-                stroke='currentColor'
-                class='size-4'
+      {#if $user?.role === 'admin' || ($user?.permissions?.chat?.multiple_models ?? true)}
+        {#if selectedModelIdx === 0}
+          <div
+            class='self-center mx-1 disabled:text-gray-600 disabled:hover:text-gray-600 -translate-y-[0.5px]'
+          >
+            <Tooltip content='添加模型'>
+              <button
+                class='p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-850'
+                {disabled}
+                on:click={() => {
+                  selectedModels = [...selectedModels, '']
+                }}
+                aria-label='添加模型'
               >
-                <path stroke-linecap='round' stroke-linejoin='round' d='M12 6v12m6-6H6' />
-              </svg>
-            </button>
-          </Tooltip>
-        </div>
-      {:else}
-        <div
-          class='  self-center mx-1 disabled:text-gray-600 disabled:hover:text-gray-600 -translate-y-[0.5px]'
-        >
-          <Tooltip content='移除模型'>
-            <button
-              {disabled}
-              on:click={() => {
-                selectedModels.splice(selectedModelIdx, 1)
-                selectedModels = selectedModels
-              }}
-              aria-label='移除模型'
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke-width='2'
-                stroke='currentColor'
-                class='size-3'
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  stroke-width='2'
+                  stroke='currentColor'
+                  class='size-4'
+                >
+                  <path stroke-linecap='round' stroke-linejoin='round' d='M12 6v12m6-6H6' />
+                </svg>
+              </button>
+            </Tooltip>
+          </div>
+        {:else}
+          <div
+            class='  self-center mx-1 disabled:text-gray-600 disabled:hover:text-gray-600 -translate-y-[0.5px]'
+          >
+            <Tooltip content='移除模型'>
+              <button
+                {disabled}
+                on:click={() => {
+                  selectedModels.splice(selectedModelIdx, 1)
+                  selectedModels = selectedModels
+                }}
+                aria-label='移除模型'
               >
-                <path stroke-linecap='round' stroke-linejoin='round' d='M19.5 12h-15' />
-              </svg>
-            </button>
-          </Tooltip>
-        </div>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  stroke-width='2'
+                  stroke='currentColor'
+                  class='size-3'
+                >
+                  <path stroke-linecap='round' stroke-linejoin='round' d='M19.5 12h-15' />
+                </svg>
+              </button>
+            </Tooltip>
+          </div>
+        {/if}
       {/if}
     </div>
   {/each}
 </div>
 
 {#if showSetDefault}
-  <div class=' absolute text-left mt-[1px] ml-1 text-[0.7rem] text-gray-500 font-primary'>
+  <div class='absolute mt-[1px] text-[0.7rem] text-gray-500 font-primary hover:text-gray-700 dark:hover:text-gray-300'>
     <button on:click={saveDefaultModel}>设为默认</button>
   </div>
 {/if}

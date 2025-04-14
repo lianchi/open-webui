@@ -41,6 +41,7 @@
   let chatBubble = true
   let chatDirection: 'LTR' | 'RTL' | 'auto' = 'auto'
   let ctrlEnterToSend = false
+  let copyFormatted = false
 
   let collapseCodeBlocks = false
   let expandDetails = false
@@ -60,6 +61,9 @@
   let hapticFeedback = false
 
   let webSearch = null
+
+  let iframeSandboxAllowSameOrigin = false
+  let iframeSandboxAllowForms = false
 
   const toggleExpandDetails = () => {
     expandDetails = !expandDetails
@@ -187,6 +191,11 @@
     saveSettings({ largeTextAsFile })
   }
 
+  const toggleCopyFormatted = async () => {
+    copyFormatted = !copyFormatted
+    saveSettings({ copyFormatted })
+  }
+
   const toggleChangeChatDirection = async () => {
     if (chatDirection === 'auto') {
       chatDirection = 'LTR'
@@ -217,6 +226,16 @@
     saveSettings({ webSearch })
   }
 
+  const toggleIframeSandboxAllowSameOrigin = async () => {
+    iframeSandboxAllowSameOrigin = !iframeSandboxAllowSameOrigin
+    saveSettings({ iframeSandboxAllowSameOrigin })
+  }
+
+  const toggleIframeSandboxAllowForms = async () => {
+    iframeSandboxAllowForms = !iframeSandboxAllowForms
+    saveSettings({ iframeSandboxAllowForms })
+  }
+
   onMount(async () => {
     titleAutoGenerate = $settings?.title?.auto ?? true
     autoTags = $settings.autoTags ?? true
@@ -231,6 +250,7 @@
     richTextInput = $settings.richTextInput ?? true
     promptAutocomplete = $settings.promptAutocomplete ?? false
     largeTextAsFile = $settings.largeTextAsFile ?? false
+    copyFormatted = $settings.copyFormatted ?? false
 
     collapseCodeBlocks = $settings.collapseCodeBlocks ?? false
     expandDetails = $settings.expandDetails ?? false
@@ -542,6 +562,26 @@
       </div>
 
       <div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+        <div>
+          复制格式化文本
+        </div>
+
+        <button
+          class='hover:text-black dark:hover:text-white'
+          on:click={() => {
+            toggleCopyFormatted()
+          }}
+          type='button'
+        >
+          {#if copyFormatted === true}
+            <span>开启</span>
+          {:else}
+            <span>关闭</span>
+          {/if}
+        </button>
+      </div>
+
+      <div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
         <div>始终折叠代码块</div>
 
         <button
@@ -705,6 +745,40 @@
             <span>总是</span>
           {:else}
             <span>默认</span>
+          {/if}
+        </button>
+      </div>
+
+      <div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+        <div>Iframe Sandbox Allow Same Origin</div>
+        <button
+          class='hover:text-black dark:hover:text-white'
+          on:click={() => {
+            toggleIframeSandboxAllowSameOrigin()
+          }}
+          type='button'
+        >
+          {#if iframeSandboxAllowSameOrigin === true}
+            <span>开启</span>
+          {:else}
+            <span>关闭</span>
+          {/if}
+        </button>
+      </div>
+
+      <div class='py-1.5 px-2 flex w-full justify-between hover:bg-[#f1f2f4] dark:hover:bg-gray-800 rounded-md'>
+        <div>Iframe Sandbox Allow Forms</div>
+        <button
+          class='hover:text-black dark:hover:text-white'
+          on:click={() => {
+            toggleIframeSandboxAllowForms()
+          }}
+          type='button'
+        >
+          {#if iframeSandboxAllowForms === true}
+            <span>开启</span>
+          {:else}
+            <span>关闭</span>
           {/if}
         </button>
       </div>

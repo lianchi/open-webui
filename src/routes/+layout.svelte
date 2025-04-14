@@ -212,7 +212,7 @@
 
     if (toolServer) {
       const res = await executeToolServer(
-        toolServer.key,
+        (toolServer?.auth_type ?? 'bearer') === 'bearer' ? toolServer?.key : localStorage.token,
         toolServer.url,
         data?.name,
         data?.params,
