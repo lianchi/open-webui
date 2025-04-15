@@ -122,9 +122,9 @@
     }
   }
 
-  const createFolder = async (name = 'Untitled') => {
+  const createFolder = async (name = '未命名') => {
     if (name === '') {
-      toast.error($i18n.t('Folder name cannot be empty.'))
+      toast.error('文件夹名称不能为空。')
       return
     }
 

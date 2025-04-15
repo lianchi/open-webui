@@ -1146,60 +1146,50 @@
 
                       {#if $_user}
                         {#if $config?.features?.enable_web_search && ($_user.role === 'admin' || $_user?.permissions?.features?.web_search)}
-                          <Tooltip content={$i18n.t('Search the internet')} placement='top'>
-                            <button
-                              on:click|preventDefault={() => (webSearchEnabled = !webSearchEnabled)}
-                              type='button'
-                              class="px-1.5 @xl:px-2.5 py-1.5 flex gap-1.5 items-center text-sm rounded-full font-medium transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden border {webSearchEnabled
-                                || ($settings?.webSearch ?? false) === 'always'
-                                ? 'bg-blue-100 dark:bg-blue-500/20 border-blue-400/20 text-blue-500 dark:text-blue-400'
-                                : 'bg-transparent border-transparent text-gray-600 dark:text-gray-300 border-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'}"
-                            >
-                              <GlobeAlt className='size-5' strokeWidth='1.75' />
-                              <span
-                                class='hidden @xl:block whitespace-nowrap overflow-hidden text-ellipsis translate-y-[0.5px]'
-                              >{$i18n.t('Web Search')}</span
-                              >
-                            </button>
-                          </Tooltip>
+                          <button
+                            on:click|preventDefault={() => (webSearchEnabled = !webSearchEnabled)}
+                            type='button'
+                            class="px-1.5 @xl:px-2.5 py-1.5 flex gap-1.5 items-center text-sm rounded-full font-medium transition-colors duration-200 focus:outline-hidden max-w-full overflow-hidden border {webSearchEnabled
+                              || ($settings?.webSearch ?? false) === 'always'
+                              ? 'bg-blue-100 dark:bg-blue-500/20 border-blue-400/20 text-blue-500 dark:text-blue-400'
+                              : 'bg-transparent text-gray-600 dark:border-gray-700 dark:text-gray-300 border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800'}"
+                          >
+                            <GlobeAlt className='size-5' strokeWidth='1.75' />
+                            <span
+                              class='hidden @xl:block whitespace-nowrap overflow-hidden text-ellipsis translate-y-[0.5px]'
+                            >联网搜索</span>
+                          </button>
                         {/if}
 
                         {#if $config?.features?.enable_image_generation && ($_user.role === 'admin' || $_user?.permissions?.features?.image_generation)}
-                          <Tooltip content={$i18n.t('Generate an image')} placement='top'>
-                            <button
-                              on:click|preventDefault={() =>
-                                (imageGenerationEnabled = !imageGenerationEnabled)}
-                              type='button'
-                              class="px-1.5 @xl:px-2.5 py-1.5 flex gap-1.5 items-center text-sm rounded-full font-medium transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden border {imageGenerationEnabled
-                                ? 'bg-gray-50 dark:bg-gray-400/10 border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-400'
-                                : 'bg-transparent border-transparent text-gray-600 dark:text-gray-300  hover:bg-gray-100 dark:hover:bg-gray-800 '}"
-                            >
-                              <Photo className='size-5' strokeWidth='1.75' />
-                              <span
-                                class='hidden @xl:block whitespace-nowrap overflow-hidden text-ellipsis translate-y-[0.5px]'
-                              >{$i18n.t('Image')}</span
-                              >
-                            </button>
-                          </Tooltip>
+                          <button
+                            on:click|preventDefault={() => (imageGenerationEnabled = !imageGenerationEnabled)}
+                            type='button'
+                            class="px-1.5 @xl:px-2.5 py-1.5 flex gap-1.5 items-center text-sm rounded-full font-medium transition-colors duration-200 focus:outline-hidden max-w-full overflow-hidden border {imageGenerationEnabled
+                              ? 'bg-blue-100 dark:bg-blue-500/20 border-blue-400/20 text-blue-500 dark:text-blue-400'
+                              : 'bg-transparent border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-300  hover:bg-gray-50 dark:hover:bg-gray-800 '}"
+                          >
+                            <Photo className='size-5' strokeWidth='1.75' />
+                            <span
+                              class='hidden @xl:block whitespace-nowrap overflow-hidden text-ellipsis translate-y-[0.5px]'
+                            >生成图像</span>
+                          </button>
                         {/if}
 
                         {#if $config?.features?.enable_code_interpreter && ($_user.role === 'admin' || $_user?.permissions?.features?.code_interpreter)}
-                          <Tooltip content={$i18n.t('Execute code for analysis')} placement='top'>
-                            <button
-                              on:click|preventDefault={() =>
-                                (codeInterpreterEnabled = !codeInterpreterEnabled)}
-                              type='button'
-                              class="px-1.5 @xl:px-2.5 py-1.5 flex gap-1.5 items-center text-sm rounded-full font-medium transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden border {codeInterpreterEnabled
-                                ? 'bg-gray-50 dark:bg-gray-400/10 border-gray-100  dark:border-gray-700 text-gray-600 dark:text-gray-400  '
-                                : 'bg-transparent border-transparent text-gray-600 dark:text-gray-300  hover:bg-gray-100 dark:hover:bg-gray-800 '}"
-                            >
-                              <CommandLine className='size-5' strokeWidth='1.75' />
-                              <span
-                                class='hidden @xl:block whitespace-nowrap overflow-hidden text-ellipsis translate-y-[0.5px]'
-                              >{$i18n.t('Code Interpreter')}</span
-                              >
-                            </button>
-                          </Tooltip>
+                          <button
+                            on:click|preventDefault={() =>
+                              (codeInterpreterEnabled = !codeInterpreterEnabled)}
+                            type='button'
+                            class="px-1.5 @xl:px-2.5 py-1.5 flex gap-1.5 items-center text-sm rounded-full font-medium transition-colors duration-200 focus:outline-hidden max-w-full overflow-hidden border {codeInterpreterEnabled
+                              ? 'bg-blue-100 dark:bg-blue-500/20 border-blue-400/20 text-blue-500 dark:text-blue-400'
+                              : 'bg-transparent border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-300  hover:bg-gray-50 dark:hover:bg-gray-800 '}"
+                          >
+                            <CommandLine className='size-5' strokeWidth='1.75' />
+                            <span
+                              class='hidden @xl:block whitespace-nowrap overflow-hidden text-ellipsis translate-y-[0.5px]'
+                            >代码解释器</span>
+                          </button>
                         {/if}
                       {/if}
                     </div>

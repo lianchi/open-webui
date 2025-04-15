@@ -99,18 +99,15 @@
     updateHandler()
   }}
 >
-  <div class='mt-0.5 space-y-3 overflow-y-scroll scrollbar-hidden h-full'>
+  <div class='mt-0.5 pr-2 space-y-3 overflow-y-scroll scrollbar-hidden h-full'>
     {#if adminConfig !== null}
       <div class="">
         <div class='mb-3.5'>
-          <div class=' mb-2.5 text-base font-medium'>{$i18n.t('General')}</div>
-
-          <hr class=' border-gray-100 dark:border-gray-850 my-2' />
-
+          <div class=' mb-2.5 text-base font-medium'>通用</div>
           <div class='mb-2.5'>
             <div class=' mb-1 text-xs font-medium flex space-x-2 items-center'>
               <div>
-                {$i18n.t('Version')}
+                版本
               </div>
             </div>
             <div class='flex w-full justify-between items-center'>
@@ -150,148 +147,48 @@
                   checkForVersionUpdates()
                 }}
               >
-                {$i18n.t('Check for updates')}
+                检查更新
               </button>
-            </div>
-          </div>
-
-          <div class='mb-2.5'>
-            <div class='flex w-full justify-between items-center'>
-              <div class='text-xs pr-2'>
-                <div class="">
-                  {$i18n.t('Help')}
-                </div>
-                <div class=' text-xs text-gray-500'>
-                  {$i18n.t('Discover how to use Open WebUI and seek support from the community.')}
-                </div>
-              </div>
-
-              <a
-                class='flex-shrink-0 text-xs font-medium underline'
-                href='https://docs.openwebui.com/'
-                target='_blank'
-              >
-                {$i18n.t('Documentation')}
-              </a>
-            </div>
-
-            <div class='mt-1'>
-              <div class='flex space-x-1'>
-                <a href='https://discord.gg/5rJgQTnV4s' target='_blank'>
-                  <img
-                    alt='Discord'
-                    src='https://img.shields.io/badge/Discord-Open_WebUI-blue?logo=discord&logoColor=white'
-                  />
-                </a>
-
-                <a href='https://twitter.com/OpenWebUI' target='_blank'>
-                  <img
-                    alt='X (formerly Twitter) Follow'
-                    src='https://img.shields.io/twitter/follow/OpenWebUI'
-                  />
-                </a>
-
-                <a href='https://github.com/open-webui/open-webui' target='_blank'>
-                  <img
-                    alt='Github Repo'
-                    src='https://img.shields.io/github/stars/open-webui/open-webui?style=social&label=Star us on Github'
-                  />
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div class='mb-2.5'>
-            <div class='flex w-full justify-between items-center'>
-              <div class='text-xs pr-2'>
-                <div class="">
-                  {$i18n.t('License')}
-                </div>
-
-                {#if $config?.license_metadata}
-                  <a
-                    href='https://docs.openwebui.com/enterprise'
-                    target='_blank'
-                    class='text-gray-500 mt-0.5'
-                  >
-                    <span class=' capitalize text-black dark:text-white'
-                    >{$config?.license_metadata?.type}
-                      license</span
-                    >
-                    registered to
-                    <span class=' capitalize text-black dark:text-white'
-                    >{$config?.license_metadata?.organization_name}</span
-                    >
-                    for
-                    <span class=' font-medium text-black dark:text-white'
-                    >{$config?.license_metadata?.seats ?? 'Unlimited'} users.</span
-                    >
-                  </a>
-                  {#if $config?.license_metadata?.html}
-                    <div class='mt-0.5'>
-                      {@html DOMPurify.sanitize($config?.license_metadata?.html)}
-                    </div>
-                  {/if}
-                {:else}
-                  <a
-                    class=' text-xs hover:underline'
-                    href='https://docs.openwebui.com/enterprise'
-                    target='_blank'
-                  >
-                    <span class='text-gray-500'>
-                      {$i18n.t(
-                        'Upgrade to a licensed plan for enhanced capabilities, including custom theming and branding, and dedicated support.',
-                      )}
-                    </span>
-                  </a>
-                {/if}
-              </div>
-
-              <!-- <button
-								class="flex-shrink-0 text-xs px-3 py-1.5 bg-gray-50 hover:bg-gray-100 dark:bg-gray-850 dark:hover:bg-gray-800 transition rounded-lg font-medium"
-							>
-								{$i18n.t('Activate')}
-							</button> -->
             </div>
           </div>
         </div>
 
+        <hr class='border-gray-100 dark:border-gray-850 my-2' />
+
         <div class='mb-3'>
-          <div class=' mb-2.5 text-base font-medium'>{$i18n.t('Authentication')}</div>
+          <div class=' mb-2.5 text-base font-medium'>身份验证</div>
 
-          <hr class=' border-gray-100 dark:border-gray-850 my-2' />
-
-          <div class='  mb-2.5 flex w-full justify-between'>
-            <div class=' self-center text-xs font-medium'>{$i18n.t('Default User Role')}</div>
+          <div class='mb-2.5 flex w-full justify-between'>
+            <div class=' self-center text-xs font-medium'>默认用户角色</div>
             <div class='flex items-center relative'>
               <select
                 class='dark:bg-gray-900 w-fit pr-8 rounded-sm px-2 text-xs bg-transparent outline-hidden text-right'
                 bind:value={adminConfig.DEFAULT_USER_ROLE}
                 placeholder='Select a role'
               >
-                <option value='pending'>{$i18n.t('pending')}</option>
-                <option value='user'>{$i18n.t('user')}</option>
-                <option value='admin'>{$i18n.t('admin')}</option>
+                <option value='pending'>待激活</option>
+                <option value='user'>用户</option>
+                <option value='admin'>管理员</option>
               </select>
             </div>
           </div>
 
           <div class=' mb-2.5 flex w-full justify-between pr-2'>
-            <div class=' self-center text-xs font-medium'>{$i18n.t('Enable New Sign Ups')}</div>
+            <div class=' self-center text-xs font-medium'>允许新用户注册</div>
 
             <Switch bind:state={adminConfig.ENABLE_SIGNUP} />
           </div>
 
           <div class='mb-2.5 flex w-full items-center justify-between pr-2'>
             <div class=' self-center text-xs font-medium'>
-              {$i18n.t('Show Admin Details in Account Pending Overlay')}
+              在用户待激活界面中显示管理员邮箱等详细信息
             </div>
 
             <Switch bind:state={adminConfig.SHOW_ADMIN_DETAILS} />
           </div>
 
           <div class='mb-2.5 flex w-full justify-between pr-2'>
-            <div class=' self-center text-xs font-medium'>{$i18n.t('Enable API Key')}</div>
+            <div class=' self-center text-xs font-medium'>启用 API 密钥</div>
 
             <Switch bind:state={adminConfig.ENABLE_API_KEY} />
           </div>
@@ -299,7 +196,7 @@
           {#if adminConfig?.ENABLE_API_KEY}
             <div class='mb-2.5 flex w-full justify-between pr-2'>
               <div class=' self-center text-xs font-medium'>
-                {$i18n.t('API Key Endpoint Restrictions')}
+                API 密钥端点限制
               </div>
 
               <Switch bind:state={adminConfig.ENABLE_API_KEY_ENDPOINT_RESTRICTIONS} />
@@ -334,7 +231,7 @@
 
           <div class=' mb-2.5 w-full justify-between'>
             <div class='flex w-full justify-between'>
-              <div class=' self-center text-xs font-medium'>{$i18n.t('JWT Expiration')}</div>
+              <div class=' self-center text-xs font-medium'>JWT 过期</div>
             </div>
 
             <div class='flex mt-2 space-x-2'>
@@ -349,15 +246,14 @@
             <div class='mt-2 text-xs text-gray-400 dark:text-gray-500'>
               {$i18n.t('Valid time units:')}
               <span class=' text-gray-300 font-medium'
-              >{$i18n.t('\'s\', \'m\', \'h\', \'d\', \'w\' or \'-1\' for no expiration.')}</span
-              >
+              >有效时间单位： 's', 'm', 'h', 'd', 'w' 或 '-1' 表示无过期时间。</span>
             </div>
           </div>
 
           <div class=' space-y-3'>
             <div class='mt-2 space-y-2 pr-1.5'>
               <div class='flex justify-between items-center text-sm'>
-                <div class='  font-medium'>{$i18n.t('LDAP')}</div>
+                <div class='font-medium'>LDAP</div>
 
                 <div class='mt-1'>
                   <Switch
@@ -374,12 +270,12 @@
                   <div class='flex w-full gap-2'>
                     <div class='w-full'>
                       <div class=' self-center text-xs font-medium min-w-fit mb-1'>
-                        {$i18n.t('Label')}
+                        标签
                       </div>
                       <input
                         class='w-full bg-transparent outline-hidden py-0.5'
                         required
-                        placeholder={$i18n.t('Enter server label')}
+                        placeholder='输入服务器标签'
                         bind:value={LDAP_SERVER.label}
                       />
                     </div>
@@ -388,28 +284,28 @@
                   <div class='flex w-full gap-2'>
                     <div class='w-full'>
                       <div class=' self-center text-xs font-medium min-w-fit mb-1'>
-                        {$i18n.t('Host')}
+                        主机
                       </div>
                       <input
                         class='w-full bg-transparent outline-hidden py-0.5'
                         required
-                        placeholder={$i18n.t('Enter server host')}
+                        placeholder='输入服务器主机名'
                         bind:value={LDAP_SERVER.host}
                       />
                     </div>
                     <div class='w-full'>
                       <div class=' self-center text-xs font-medium min-w-fit mb-1'>
-                        {$i18n.t('Port')}
+                        端口
                       </div>
                       <Tooltip
                         placement='top-start'
-                        content={$i18n.t('Default to 389 or 636 if TLS is enabled')}
+                        content='如果启用 TLS，则默认为 389 或 636'
                         className='w-full'
                       >
                         <input
                           class='w-full bg-transparent outline-hidden py-0.5'
                           type='number'
-                          placeholder={$i18n.t('Enter server port')}
+                          placeholder='输入服务器端口'
                           bind:value={LDAP_SERVER.port}
                         />
                       </Tooltip>
@@ -418,26 +314,26 @@
                   <div class='flex w-full gap-2'>
                     <div class='w-full'>
                       <div class=' self-center text-xs font-medium min-w-fit mb-1'>
-                        {$i18n.t('Application DN')}
+                        Application DN
                       </div>
                       <Tooltip
-                        content={$i18n.t('The Application Account DN you bind with for search')}
+                        content='您所绑定用于搜索的 Application Account DN'
                         placement='top-start'
                       >
                         <input
                           class='w-full bg-transparent outline-hidden py-0.5'
                           required
-                          placeholder={$i18n.t('Enter Application DN')}
+                          placeholder='输入 Application DN'
                           bind:value={LDAP_SERVER.app_dn}
                         />
                       </Tooltip>
                     </div>
                     <div class='w-full'>
                       <div class=' self-center text-xs font-medium min-w-fit mb-1'>
-                        {$i18n.t('Application DN Password')}
+                        Application DN 密码
                       </div>
                       <SensitiveInput
-                        placeholder={$i18n.t('Enter Application DN Password')}
+                        placeholder='输入 Application DN 密码'
                         bind:value={LDAP_SERVER.app_dn_password}
                       />
                     </div>
@@ -567,10 +463,10 @@
           </div>
         </div>
 
-        <div class='mb-3'>
-          <div class=' mb-2.5 text-base font-medium'>{$i18n.t('Features')}</div>
+        <hr class=' border-gray-100 dark:border-gray-850 my-2' />
 
-          <hr class=' border-gray-100 dark:border-gray-850 my-2' />
+        <div class='mb-3'>
+          <div class=' mb-2.5 text-base font-medium'>功能</div>
 
           <div class='mb-2.5 flex w-full items-center justify-between pr-2'>
             <div class=' self-center text-xs font-medium'>
