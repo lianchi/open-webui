@@ -7,9 +7,8 @@
 	import fileSaver from 'file-saver';
 	const { saveAs } = fileSaver;
 
-	import { onMount, getContext, tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { goto } from '$app/navigation';
-	const i18n = getContext('i18n');
 
 	import { WEBUI_NAME, config, mobile, models as _models, settings, user } from '$lib/stores';
 	import {
@@ -65,7 +64,7 @@
 		});
 
 		if (res) {
-			toast.success($i18n.t(`Deleted {{name}}`, { name: model.id }));
+			toast.success(`已删除 ${model.id}`);
 		}
 
 		await _models.set(
@@ -87,9 +86,9 @@
 	};
 
 	const shareModelHandler = async (model) => {
-		toast.success($i18n.t('Redirecting you to Open WebUI Community'));
+		toast.success('正在重定向到706社区');
 
-		const url = 'https://openwebui.com';
+		const url = 'https://ai.706.com';
 
 		const tab = await window.open(`${url}/models/create`, '_blank');
 
@@ -128,12 +127,7 @@
 		const res = await updateModelById(localStorage.token, info.id, info);
 
 		if (res) {
-			toast.success(
-				$i18n.t(`Model {{name}} is now {{status}}`, {
-					name: info.id,
-					status: info.meta.hidden ? 'hidden' : 'visible'
-				})
-			);
+			toast.success(`模型 ${info.id} 已${info.meta.hidden ? '隐藏' : '显示'}`);
 		}
 
 		await _models.set(
@@ -196,7 +190,7 @@
 
 <svelte:head>
 	<title>
-		{$i18n.t('Models')} | {$WEBUI_NAME}
+		模型 | {$WEBUI_NAME}
 	</title>
 </svelte:head>
 
@@ -208,26 +202,24 @@
 		}}
 	/>
 
-	<div class="flex flex-col gap-1 my-1.5">
+	<div class="flex flex-col gap-2 my-1.5">
 		<div class="flex justify-between items-center">
 			<div class="flex items-center md:self-center text-xl font-medium px-0.5">
-				{$i18n.t('Models')}
+				模型
 				<div class="flex self-center w-[1px] h-6 mx-2.5 bg-gray-50 dark:bg-gray-850" />
-				<span class="text-lg font-medium text-gray-500 dark:text-gray-300"
-					>{filteredModels.length}</span
-				>
+				<span class="text-lg font-medium text-gray-500 dark:text-gray-300">{filteredModels.length}</span>
 			</div>
 		</div>
 
 		<div class=" flex flex-1 items-center w-full space-x-2">
-			<div class="flex flex-1 items-center">
+			<div class="flex flex-1 rounded-full px-2 border border-gray-200 dark:border-gray-800">
 				<div class=" self-center ml-1 mr-3">
 					<Search className="size-3.5" />
 				</div>
 				<input
 					class=" w-full text-sm py-1 rounded-r-xl outline-hidden bg-transparent"
 					bind:value={searchValue}
-					placeholder={$i18n.t('Search Models')}
+					placeholder="搜索模型"
 				/>
 			</div>
 
@@ -242,10 +234,10 @@
 		</div>
 	</div>
 
-	<div class=" my-2 mb-5 gap-2 grid lg:grid-cols-2 xl:grid-cols-3" id="model-list">
+	<div class="mt-3 mb-5 gap-2 grid lg:grid-cols-2 xl:grid-cols-3" id="model-list">
 		{#each filteredModels as model}
 			<div
-				class=" flex flex-col cursor-pointer w-full px-3 py-2 dark:hover:bg-white/5 hover:bg-black/5 rounded-xl transition"
+				class="flex flex-col border border-gray-100 dark:border-gray-850 cursor-pointer w-full px-3 py-2 dark:hover:bg-white/5 hover:bg-black/5 rounded-xl transition"
 				id="model-item-{model.id}"
 			>
 				<div class="flex gap-4 mt-0.5 mb-0.5">
@@ -292,23 +284,21 @@
 				<div class="flex justify-between items-center -mb-0.5 px-0.5">
 					<div class=" text-xs mt-0.5">
 						<Tooltip
-							content={model?.user?.email ?? $i18n.t('Deleted User')}
+							content={model?.user?.email ?? '已删除用户'}
 							className="flex shrink-0"
 							placement="top-start"
 						>
 							<div class="shrink-0 text-gray-500">
-								{$i18n.t('By {{name}}', {
-									name: capitalizeFirstLetter(
-										model?.user?.name ?? model?.user?.email ?? $i18n.t('Deleted User')
-									)
-								})}
+								由 {capitalizeFirstLetter(
+									model?.user?.name ?? model?.user?.email ?? '已删除用户'
+								)} 提供
 							</div>
 						</Tooltip>
 					</div>
 
 					<div class="flex flex-row gap-0.5 items-center">
 						{#if shiftKey}
-							<Tooltip content={$i18n.t('Delete')}>
+							<Tooltip content="删除">
 								<button
 									class="self-center w-fit text-sm px-2 py-2 dark:text-gray-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 rounded-xl"
 									type="button"
@@ -373,7 +363,7 @@
 							</ModelMenu>
 
 							<div class="ml-1">
-								<Tooltip content={model.is_active ? $i18n.t('Enabled') : $i18n.t('Disabled')}>
+								<Tooltip content={model.is_active ? '启用': '禁用'}>
 									<Switch
 										bind:state={model.is_active}
 										on:change={async (e) => {
@@ -456,7 +446,7 @@
 						modelsImportInputElement.click();
 					}}
 				>
-					<div class=" self-center mr-2 font-medium line-clamp-1">{$i18n.t('Import Models')}</div>
+					<div class=" self-center mr-2 font-medium line-clamp-1">导入模型</div>
 
 					<div class=" self-center">
 						<svg
@@ -482,7 +472,7 @@
 						}}
 					>
 						<div class=" self-center mr-2 font-medium line-clamp-1">
-							{$i18n.t('Export Models')}
+							导出模型
 						</div>
 
 						<div class=" self-center">
@@ -502,30 +492,6 @@
 					</button>
 				{/if}
 			</div>
-		</div>
-	{/if}
-
-	{#if $config?.features.enable_community_sharing}
-		<div class=" my-16">
-
-			<a
-				class=" flex cursor-pointer items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-850 w-full mb-2 px-3.5 py-1.5 rounded-xl transition"
-				href="https://openwebui.com/#open-webui-community"
-				target="_blank"
-			>
-				<div class=" self-center">
-					<div class=" font-semibold line-clamp-1">{$i18n.t('Discover a model')}</div>
-					<div class=" text-sm line-clamp-1">
-						{$i18n.t('Discover, download, and explore model presets')}
-					</div>
-				</div>
-
-				<div>
-					<div>
-						<ChevronRight />
-					</div>
-				</div>
-			</a>
 		</div>
 	{/if}
 {:else}

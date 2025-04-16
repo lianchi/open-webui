@@ -37,7 +37,7 @@
         <div class='mr-1 max-w-full'>
           <Selector
             id={`${selectedModelIdx}`}
-            placeholder='选择一个模型'
+            placeholder='请选择'
             items={$models.map(model => ({
               value: model.id,
               label: model.name,
@@ -45,7 +45,7 @@
             }))}
             showTemporaryChatControl={$user?.role === 'user'
               ? ($user?.permissions?.chat?.temporary ?? true)
-                && !($user?.permissions?.chat?.temporary_enforced ?? false)
+              && !($user?.permissions?.chat?.temporary_enforced ?? false)
               : true}
             bind:value={selectedModel}
           />
@@ -54,12 +54,10 @@
 
       {#if $user?.role === 'admin' || ($user?.permissions?.chat?.multiple_models ?? true)}
         {#if selectedModelIdx === 0}
-          <div
-            class='self-center mx-1 disabled:text-gray-600 disabled:hover:text-gray-600 -translate-y-[0.5px]'
-          >
+          <div class='self-center mx-1 disabled:text-gray-600 disabled:hover:text-gray-600'>
             <Tooltip content='添加模型'>
               <button
-                class='p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-850'
+                class='p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800'
                 {disabled}
                 on:click={() => {
                   selectedModels = [...selectedModels, '']
@@ -80,11 +78,10 @@
             </Tooltip>
           </div>
         {:else}
-          <div
-            class='  self-center mx-1 disabled:text-gray-600 disabled:hover:text-gray-600 -translate-y-[0.5px]'
-          >
+          <div class='self-center mx-1 disabled:text-gray-600 disabled:hover:text-gray-600'>
             <Tooltip content='移除模型'>
               <button
+                class='p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800'
                 {disabled}
                 on:click={() => {
                   selectedModels.splice(selectedModelIdx, 1)
@@ -111,7 +108,7 @@
   {/each}
 </div>
 
-{#if showSetDefault}
+{#if showSetDefault && selectedModels.length === 1}
   <div class='absolute mt-[1px] text-[0.7rem] text-gray-500 font-primary hover:text-gray-700 dark:hover:text-gray-300'>
     <button on:click={saveDefaultModel}>设为默认</button>
   </div>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { config, models, settings, showCallOverlay, TTSWorker } from '$lib/stores';
-	import { onMount, tick, getContext, onDestroy, createEventDispatcher } from 'svelte';
+	import { onMount, tick, onDestroy, createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -13,8 +13,6 @@
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
 	import VideoInputMenu from './CallOverlay/VideoInputMenu.svelte';
 	import { KokoroWorker } from '$lib/workers/KokoroWorker';
-
-	const i18n = getContext('i18n');
 
 	export let eventTarget: EventTarget;
 	export let submitPrompt: Function;
@@ -911,9 +909,9 @@
 						</button>
 					</VideoInputMenu>
 				{:else}
-					<Tooltip content={$i18n.t('Camera')}>
+					<Tooltip content='摄像头'>
 						<button
-							class=" p-3 rounded-full bg-gray-50 dark:bg-gray-900"
+							class=" p-3 rounded-full bg-gray-50 hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800"
 							type="button"
 							on:click={async () => {
 								await navigator.mediaDevices.getUserMedia({ video: true });
@@ -944,30 +942,28 @@
 				{/if}
 			</div>
 
-			<div>
-				<button
-					type="button"
-					on:click={() => {
-						if (assistantSpeaking) {
-							stopAllAudio();
-						}
-					}}
-				>
-					<div class=" line-clamp-1 text-sm font-medium">
-						{#if loading}
-							{$i18n.t('Thinking...')}
-						{:else if assistantSpeaking}
-							{$i18n.t('Tap to interrupt')}
-						{:else}
-							{$i18n.t('Listening...')}
-						{/if}
-					</div>
-				</button>
-			</div>
+			<button
+				type="button"
+				on:click={() => {
+					if (assistantSpeaking) {
+						stopAllAudio();
+					}
+				}}
+			>
+				<div class=" line-clamp-1 text-sm font-medium">
+					{#if loading}
+						正在思考...
+					{:else if assistantSpeaking}
+						点击以中断
+					{:else}
+						正在倾听...
+					{/if}
+				</div>
+			</button>
 
 			<div>
 				<button
-					class=" p-3 rounded-full bg-gray-50 dark:bg-gray-900"
+					class=" p-3 rounded-full bg-gray-50 hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800"
 					on:click={async () => {
 						await stopAudioStream();
 						await stopVideoStream();

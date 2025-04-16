@@ -345,9 +345,9 @@
       {#if selectedModel}
         {selectedModel.label}
       {:else}
-        {placeholder}
+        <span class='text-gray-400 font-normal'>{placeholder}</span>
       {/if}
-      <ChevronDown className=' self-center ml-2 size-3' strokeWidth='2.5' />
+      <ChevronDown className='text-gray-400 self-center ml-2 size-3' strokeWidth='2.5' />
     </div>
   </DropdownMenu.Trigger>
 

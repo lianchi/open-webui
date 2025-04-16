@@ -1,5 +1,22 @@
 <script lang='ts'>
   import { goto } from '$app/navigation'
+  import { createNewChannel, getChannels } from '$lib/apis/channels'
+  import {
+    createNewChat,
+    deleteChatById,
+    getAllTags,
+    getChatById,
+    getChatList,
+    getChatListBySearchText,
+    getChatPinnedStatusById,
+    getPinnedChatList,
+    importChat,
+    toggleChatPinnedStatusById,
+    updateChatFolderIdById,
+  } from '$lib/apis/chats'
+  import { createNewFolder, getFolders, updateFolderParentIdById } from '$lib/apis/folders'
+  import { WEBUI_BASE_URL } from '$lib/constants'
+
   import {
     channels,
     chatId,
@@ -21,29 +38,10 @@
     user,
     WEBUI_NAME,
   } from '$lib/stores'
-  import { getContext, onDestroy, onMount, tick } from 'svelte'
+  import { onDestroy, onMount, tick } from 'svelte'
   import { toast } from 'svelte-sonner'
+
   import { v4 as uuidv4 } from 'uuid'
-
-  const i18n = getContext('i18n')
-
-  import { createNewChannel, getChannels } from '$lib/apis/channels'
-  import {
-    createNewChat,
-    deleteChatById,
-    getAllTags,
-    getChatById,
-    getChatList,
-    getChatListBySearchText,
-    getChatPinnedStatusById,
-    getPinnedChatList,
-    importChat,
-    toggleChatPinnedStatusById,
-    updateChatFolderIdById,
-  } from '$lib/apis/chats'
-  import { createNewFolder, getFolders, updateFolderParentIdById } from '$lib/apis/folders'
-
-  import { WEBUI_BASE_URL } from '$lib/constants'
   import AddFilesPlaceholder from '../AddFilesPlaceholder.svelte'
   import Folder from '../common/Folder.svelte'
   import Loader from '../common/Loader.svelte'
@@ -52,6 +50,7 @@
   import FolderPlus from '../icons/FolderPlus.svelte'
   import Home from '../icons/Home.svelte'
   import Plus from '../icons/Plus.svelte'
+  import Help from './Help.svelte'
   import ArchivedChatsModal from './Sidebar/ArchivedChatsModal.svelte'
   import ChannelItem from './Sidebar/ChannelItem.svelte'
   import ChannelModal from './Sidebar/ChannelModal.svelte'
@@ -545,7 +544,7 @@
     <div class='px-1.5 flex justify-between space-x-1 text-gray-600 dark:text-gray-400'>
       <a
         id='sidebar-new-chat-button'
-        class='flex items-center flex-1 space-x-2.5 rounded-lg px-2 py-1.5 hover:bg-white/60 dark:hover:bg-gray-850 transition no-drag-region'
+        class='flex items-center flex-1 space-x-2.5 rounded-lg px-2 py-1.5 hover:bg-white/60 dark:hover:bg-gray-800 transition no-drag-region'
         href='/'
         draggable='false'
         on:click={async () => {
@@ -914,7 +913,7 @@
     </div>
 
     <div class='px-2'>
-      <div class='flex items-center justify-between font-primary'>
+      <div class='w-full flex items-center space-x-2'>
         {#if $user !== undefined && $user !== null}
           <UserMenu
             role={$user?.role}
@@ -925,7 +924,7 @@
             }}
           >
             <button
-              class='flex items-center rounded-xl py-2.5 px-2.5 w-full hover:bg-white/60 dark:hover:bg-gray-850 transition'
+              class='flex items-center rounded-xl py-1.5 px-2.5 hover:bg-white/60 dark:hover:bg-gray-850 transition'
               on:click={() => {
                 showDropdown = !showDropdown
               }}
@@ -937,10 +936,11 @@
                   alt='用户菜单'
                 />
               </div>
-              <div class='font-medium'>{$user?.name}</div>
+              <div class='font-medium line-clamp-1'>{$user?.name}</div>
             </button>
           </UserMenu>
         {/if}
+        <Help classNames='ml-auto' />
       </div>
     </div>
   </div>

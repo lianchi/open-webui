@@ -1,12 +1,10 @@
 <script lang='ts'>
   import Fuse from 'fuse.js'
   import { Pane, PaneGroup, PaneResizer } from 'paneforge'
-  import { getContext, onDestroy, onMount, tick } from 'svelte'
+  import { onDestroy, onMount, tick } from 'svelte'
   import { toast } from 'svelte-sonner'
 
   import { v4 as uuidv4 } from 'uuid'
-
-  const i18n = getContext('i18n')
 
   import { goto } from '$app/navigation'
   import { page } from '$app/stores'
@@ -130,7 +128,7 @@
     }
 
     if (fileItem.size == 0) {
-      toast.error($i18n.t('You cannot upload an empty file.'))
+      toast.error('请勿上传空文件。')
       return null
     }
 
@@ -142,11 +140,7 @@
         fileSize: file.size,
         maxSize: ($config?.file?.max_size ?? 0) * 1024 * 1024,
       })
-      toast.error(
-        $i18n.t(`File size should not exceed {{maxSize}} MB.`, {
-          maxSize: $config?.file?.max_size,
-        }),
-      )
+      toast.error(`文件大小不应超过 ${$config?.file?.max_size} MB.`)
       return
     }
 
@@ -172,7 +166,7 @@
         await addFileHandler(uploadedFile.id)
       }
       else {
-        toast.error($i18n.t('Failed to upload file.'))
+        toast.error('上传文件失败。')
       }
     }
     catch (e) {
@@ -361,7 +355,7 @@
 
       if (res) {
         knowledge = res
-        toast.success($i18n.t('Knowledge reset successfully.'))
+        toast.success('知识库重置成功。')
 
         // Upload directory
         uploadDirectoryHandler()
@@ -382,10 +376,10 @@
 
     if (updatedKnowledge) {
       knowledge = updatedKnowledge
-      toast.success($i18n.t('File added successfully.'))
+      toast.success('文件添加成功。')
     }
     else {
-      toast.error($i18n.t('Failed to add file.'))
+      toast.error('文件添加失败。')
       knowledge.files = knowledge.files.filter(file => file.id !== fileId)
     }
   }
@@ -401,7 +395,7 @@
 
       if (updatedKnowledge) {
         knowledge = updatedKnowledge
-        toast.success($i18n.t('File removed successfully.'))
+        toast.success('文件删除成功。')
       }
     }
     catch (e) {
@@ -428,7 +422,7 @@
 
     if (res && updatedKnowledge) {
       knowledge = updatedKnowledge
-      toast.success($i18n.t('File content updated successfully.'))
+      toast.success('文件内容更新成功。')
     }
   }
 
@@ -440,7 +434,7 @@
 
     debounceTimeout = setTimeout(async () => {
       if (knowledge.name.trim() === '' || knowledge.description.trim() === '') {
-        toast.error($i18n.t('Please fill in all fields.'))
+        toast.error('请填写所有字段。')
         return
       }
 
@@ -454,7 +448,7 @@
       })
 
       if (res) {
-        toast.success($i18n.t('Knowledge updated successfully'))
+        toast.success('知识库更新成功')
         _knowledge.set(await getKnowledgeBases(localStorage.token))
       }
     }, 1000)
@@ -499,7 +493,7 @@
           }
         }
         else {
-          toast.error($i18n.t(`File not found.`))
+          toast.error('文件未找到。')
         }
       }
     }
@@ -587,14 +581,14 @@
       : 'left-0'}  w-full h-full flex z-50 touch-none pointer-events-none"
     id='dropzone'
     role='region'
-    aria-label='Drag and Drop Container'
+    aria-label='文件拖拽'
   >
     <div class='absolute w-full h-full backdrop-blur-sm bg-gray-800/40 flex justify-center'>
       <div class='m-auto pt-64 flex flex-col justify-center'>
         <div class='max-w-md'>
           <AddFilesPlaceholder>
             <div class=' mt-2 text-center text-sm dark:text-gray-200 w-full'>
-              Drop any files here to add to my documents
+              拖拽文件到这里以添加到我的文档
             </div>
           </AddFilesPlaceholder>
         </div>
@@ -605,9 +599,7 @@
 
 <SyncConfirmDialog
   bind:show={showSyncConfirmModal}
-  message={$i18n.t(
-    'This will reset the knowledge base and sync all files. Do you wish to continue?',
-  )}
+  message='这将重置知识库并替换所有文件为目录下文件。确认继续？'
   on:confirm={() => {
     syncDirectoryHandler()
   }}
@@ -641,7 +633,7 @@
       }
     }
     else {
-      toast.error($i18n.t(`File not found.`))
+      toast.error('文件未找到。')
     }
   }}
 />
@@ -684,7 +676,7 @@
                 <LockClosed strokeWidth='2.5' className='size-3.5' />
 
                 <div class='text-sm font-medium shrink-0'>
-                  {$i18n.t('Access')}
+                  访问
                 </div>
               </button>
             </div>
@@ -741,7 +733,7 @@
                       updateFileContentHandler()
                     }}
                   >
-                    {$i18n.t('Save')}
+                    保存
                   </button>
                 </div>
               </div>
@@ -753,7 +745,7 @@
                   <RichTextInput
                     className='input-prose-sm'
                     bind:value={selectedFile.data.content}
-                    placeholder={$i18n.t('Add content here')}
+                    placeholder='在此添加内容'
                     preserveBreaks={true}
                   />
                 {/key}
@@ -762,7 +754,7 @@
           {:else}
             <div class='h-full flex w-full'>
               <div class='m-auto text-xs text-center text-gray-200 dark:text-gray-700'>
-                {$i18n.t('Drag and drop a file to upload or select a file to view')}
+                拖动文件上传或选择文件查看
               </div>
             </div>
           {/if}
@@ -799,7 +791,7 @@
                       updateFileContentHandler()
                     }}
                   >
-                    {$i18n.t('Save')}
+                    保存
                   </button>
                 </div>
               </div>
@@ -811,7 +803,7 @@
                   <RichTextInput
                     className='input-prose-sm'
                     bind:value={selectedFile.data.content}
-                    placeholder={$i18n.t('Add content here')}
+                    placeholder='在此添加内容'
                     preserveBreaks={true}
                   />
                 {/key}
@@ -822,14 +814,7 @@
       {/if}
 
       <div
-        class="{largeScreen ? 'shrink-0 w-72 max-w-72' : 'flex-1'}
-          flex
-          py-2
-          rounded-2xl
-          border
-          border-gray-50
-          h-full
-          dark:border-gray-850"
+        class="{largeScreen ? 'shrink-0 w-72 max-w-72' : 'flex-1'} flex py-2 rounded-2xl border border-gray-100 h-full dark:border-gray-850"
       >
         <div class=' flex flex-col w-full space-x-2 rounded-lg h-full'>
           <div class='w-full h-full flex flex-col'>
@@ -852,7 +837,7 @@
                 <input
                   class=' w-full text-sm pr-4 py-1 rounded-r-xl outline-hidden bg-transparent'
                   bind:value={query}
-                  placeholder={$i18n.t('Search Collection')}
+                  placeholder='搜索内容'
                   on:focus={() => {
                     selectedFileId = null
                   }}
@@ -899,7 +884,7 @@
             {:else}
               <div class='my-3 flex flex-col justify-center text-center text-gray-500 text-xs'>
                 <div>
-                  {$i18n.t('No content found')}
+                  未发现内容
                 </div>
               </div>
             {/if}

@@ -3,7 +3,7 @@
 	import fileSaver from 'file-saver';
 	const { saveAs } = fileSaver;
 
-	import { onMount, getContext } from 'svelte';
+	import { onMount } from 'svelte';
 	import { WEBUI_NAME, config, prompts, tools as _tools, user } from '$lib/stores';
 	import { createNewPrompt, deletePromptByCommand, getPrompts } from '$lib/apis/prompts';
 
@@ -28,11 +28,8 @@
 	import GarbageBin from '../icons/GarbageBin.svelte';
 	import Search from '../icons/Search.svelte';
 	import Plus from '../icons/Plus.svelte';
-	import ChevronRight from '../icons/ChevronRight.svelte';
 	import Spinner from '../common/Spinner.svelte';
 	import { capitalizeFirstLetter } from '$lib/utils';
-
-	const i18n = getContext('i18n');
 
 	let shiftKey = false;
 	let loaded = false;
@@ -65,9 +62,9 @@
 			return null;
 		});
 
-		toast.success($i18n.t('Redirecting you to Open WebUI Community'));
+		toast.success('正在将您重定向到社区');
 
-		const url = 'https://openwebui.com';
+		const url = 'https://ai.706.com';
 
 		const tab = await window.open(`${url}/tools/create`, '_blank');
 
@@ -120,7 +117,7 @@
 		});
 
 		if (res) {
-			toast.success($i18n.t('Tool deleted successfully'));
+			toast.success('工具已删除');
 			await init();
 		}
 	};
@@ -164,31 +161,29 @@
 
 <svelte:head>
 	<title>
-		{$i18n.t('Tools')} | {$WEBUI_NAME}
+		工具 | {$WEBUI_NAME}
 	</title>
 </svelte:head>
 
 {#if loaded}
-	<div class="flex flex-col gap-1 my-1.5">
+	<div class="flex flex-col gap-2 my-1.5">
 		<div class="flex justify-between items-center">
 			<div class="flex md:self-center text-xl font-medium px-0.5 items-center">
-				{$i18n.t('Tools')}
+				工具
 				<div class="flex self-center w-[1px] h-6 mx-2.5 bg-gray-50 dark:bg-gray-850" />
-				<span class="text-lg font-medium text-gray-500 dark:text-gray-300"
-					>{filteredItems.length}</span
-				>
+				<span class="text-lg font-medium text-gray-500 dark:text-gray-300">{filteredItems.length}</span>
 			</div>
 		</div>
 
-		<div class=" flex w-full space-x-2">
-			<div class="flex flex-1">
+		<div class="flex w-full space-x-2">
+			<div class="flex flex-1 rounded-full px-2 border border-gray-200 dark:border-gray-800">
 				<div class=" self-center ml-1 mr-3">
 					<Search className="size-3.5" />
 				</div>
 				<input
 					class=" w-full text-sm pr-4 py-1 rounded-r-xl outline-hidden bg-transparent"
 					bind:value={query}
-					placeholder={$i18n.t('Search Tools')}
+					placeholder="搜索工具"
 				/>
 			</div>
 
@@ -203,11 +198,9 @@
 		</div>
 	</div>
 
-	<div class="mb-5 gap-2 grid lg:grid-cols-2 xl:grid-cols-3">
+	<div class="mb-5 mt-3 gap-2 grid lg:grid-cols-2 xl:grid-cols-3">
 		{#each filteredItems as tool}
-			<div
-				class=" flex space-x-4 cursor-pointer w-full px-3 py-2 dark:hover:bg-white/5 hover:bg-black/5 rounded-xl transition"
-			>
+			<div class="flex space-x-4 border border-gray-100 dark:border-gray-850 cursor-pointer w-full px-3 py-2 dark:hover:bg-white/5 hover:bg-black/5 rounded-xl transition">
 				<a
 					class=" flex flex-1 space-x-3.5 cursor-pointer w-full"
 					href={`/workspace/tools/edit?id=${encodeURIComponent(tool.id)}`}
@@ -232,7 +225,6 @@
 
 									<div class="line-clamp-1">
 										{tool.name}
-
 										<span class=" text-gray-500 text-xs font-medium shrink-0">{tool.id}</span>
 									</div>
 								</div>
@@ -247,15 +239,13 @@
 
 								<div class="text-xs text-gray-500 shrink-0">
 									<Tooltip
-										content={tool?.user?.email ?? $i18n.t('Deleted User')}
+										content={tool?.user?.email ?? '已删除用户'}
 										className="flex shrink-0"
 										placement="top-start"
 									>
-										{$i18n.t('By {{name}}', {
-											name: capitalizeFirstLetter(
-												tool?.user?.name ?? tool?.user?.email ?? $i18n.t('Deleted User')
-											)
-										})}
+										由 {capitalizeFirstLetter(
+											tool?.user?.name ?? tool?.user?.email ?? '已删除用户'
+										)} 提供
 									</Tooltip>
 								</div>
 							</div>
@@ -264,7 +254,7 @@
 				</a>
 				<div class="flex flex-row gap-0.5 self-center">
 					{#if shiftKey}
-						<Tooltip content={$i18n.t('Delete')}>
+						<Tooltip content="删除">
 							<button
 								class="self-center w-fit text-sm px-2 py-2 dark:text-gray-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 rounded-xl"
 								type="button"
@@ -291,7 +281,7 @@
 							</Tooltip>
 						{/if}
 
-						<Tooltip content={$i18n.t('Valves')}>
+						<Tooltip content="值">
 							<button
 								class="self-center w-fit text-sm px-2 py-2 dark:text-gray-300 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 rounded-xl"
 								type="button"
@@ -376,7 +366,7 @@
 						toolsImportInputElement.click();
 					}}
 				>
-					<div class=" self-center mr-2 font-medium line-clamp-1">{$i18n.t('Import Tools')}</div>
+					<div class=" self-center mr-2 font-medium line-clamp-1">导入工具</div>
 
 					<div class=" self-center">
 						<svg
@@ -411,7 +401,7 @@
 							}
 						}}
 					>
-						<div class=" self-center mr-2 font-medium line-clamp-1">{$i18n.t('Export Tools')}</div>
+						<div class=" self-center mr-2 font-medium line-clamp-1">导出工具</div>
 
 						<div class=" self-center">
 							<svg
@@ -433,39 +423,15 @@
 		</div>
 	{/if}
 
-	{#if $config?.features.enable_community_sharing}
-		<div class=" my-16">
-
-			<a
-				class=" flex cursor-pointer items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-850 w-full mb-2 px-3.5 py-1.5 rounded-xl transition"
-				href="https://openwebui.com/#open-webui-community"
-				target="_blank"
-			>
-				<div class=" self-center">
-					<div class=" font-semibold line-clamp-1">{$i18n.t('Discover a tool')}</div>
-					<div class=" text-sm line-clamp-1">
-						{$i18n.t('Discover, download, and explore custom tools')}
-					</div>
-				</div>
-
-				<div>
-					<div>
-						<ChevronRight />
-					</div>
-				</div>
-			</a>
-		</div>
-	{/if}
-
 	<DeleteConfirmDialog
 		bind:show={showDeleteConfirm}
-		title={$i18n.t('Delete tool?')}
+		title="删除工具？"
 		on:confirm={() => {
 			deleteHandler(selectedTool);
 		}}
 	>
 		<div class=" text-sm text-gray-500">
-			{$i18n.t('This will delete')} <span class="  font-semibold">{selectedTool.name}</span>.
+			这将删除 <span class="  font-semibold">{selectedTool.name}</span>
 		</div>
 	</DeleteConfirmDialog>
 
@@ -487,7 +453,7 @@
 					});
 				}
 
-				toast.success($i18n.t('Tool imported successfully'));
+				toast.success('工具导入成功');
 				tools.set(await getTools(localStorage.token));
 			};
 
@@ -496,20 +462,18 @@
 	>
 		<div class="text-sm text-gray-500">
 			<div class=" bg-yellow-500/20 text-yellow-700 dark:text-yellow-200 rounded-lg px-4 py-3">
-				<div>{$i18n.t('Please carefully review the following warnings:')}</div>
+				<div>请仔细阅读以下警告：</div>
 
 				<ul class=" mt-1 list-disc pl-4 text-xs">
 					<li>
-						{$i18n.t('Tools have a function calling system that allows arbitrary code execution')}.
+						注意：工具有权执行任意代码。
 					</li>
-					<li>{$i18n.t('Do not install tools from sources you do not fully trust.')}</li>
+					<li>切勿安装来源不完全可信的工具。</li>
 				</ul>
 			</div>
 
 			<div class="my-3">
-				{$i18n.t(
-					'I acknowledge that I have read and I understand the implications of my action. I am aware of the risks associated with executing arbitrary code and I have verified the trustworthiness of the source.'
-				)}
+				我已阅读并理解我的行为所带来的影响，明白执行任意代码所涉及的风险。且我已验证代码来源可信度。
 			</div>
 		</div>
 	</ConfirmDialog>

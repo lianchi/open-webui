@@ -191,9 +191,7 @@
       </div>
     </div>
 
-    <div
-      class='fixed bg-transparent min-h-screen w-full flex justify-center font-primary z-50 text-black dark:text-white'
-    >
+    <div class='fixed bg-transparent min-h-screen w-full flex justify-center font-primary z-50 text-black dark:text-white'>
       <div class='w-full sm:max-w-md px-10 min-h-screen flex flex-col text-center'>
         {#if ($config?.features.auth_trusted_header ?? false) || $config?.features.auth === false}
           <div class=' my-auto pb-10 w-full'>
@@ -246,7 +244,7 @@
                       <input
                         bind:value={name}
                         type='text'
-                        class='my-0.5 w-full text-sm outline-hidden bg-transparent'
+                        class='my-0.5 text-sm outline-hidden bg-transparent py-1 px-2 rounded-lg w-full border border-gray-200 dark:border-gray-800'
                         autocomplete='name'
                         placeholder='输入您的名称'
                         required
@@ -260,7 +258,7 @@
                       <input
                         bind:value={ldapUsername}
                         type='text'
-                        class='my-0.5 w-full text-sm outline-hidden bg-transparent'
+                        class='my-0.5 text-sm outline-hidden bg-transparent py-1 px-2 rounded-lg w-full border border-gray-200 dark:border-gray-800'
                         autocomplete='username'
                         name='username'
                         placeholder='输入您的用户名'
@@ -300,14 +298,14 @@
                 {#if $config?.features.enable_login_form || $config?.features.enable_ldap}
                   {#if mode === 'ldap'}
                     <button
-                      class='bg-gray-700/5 hover:bg-gray-700/10 dark:bg-gray-100/5 dark:hover:bg-gray-100/10 dark:text-gray-300 dark:hover:text-white transition w-full rounded-full font-medium text-sm py-2.5'
+                      class='bg-primary hover:opacity-80 text-white transition w-full rounded-xl font-medium text-sm py-2'
                       type='submit'
                     >
                       认证
                     </button>
                   {:else}
                     <button
-                      class='bg-primary hover:opacity-80 text-white transition w-full rounded-lg font-medium text-sm py-1.5'
+                      class='bg-primary hover:opacity-80 text-white transition w-full rounded-xl font-medium text-sm py-2'
                       type='submit'
                     >
                       {mode === 'signin'

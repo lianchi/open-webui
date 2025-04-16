@@ -1,7 +1,7 @@
 <script lang='ts'>
   import { createPicker, getAuthToken } from '$lib/utils/google-drive-picker'
   import { pickAndDownloadFile } from '$lib/utils/onedrive-file-picker'
-  import { createEventDispatcher, getContext, onDestroy, onMount, tick } from 'svelte'
+  import { createEventDispatcher, onDestroy, onMount, tick } from 'svelte'
   import { toast } from 'svelte-sonner'
 
   import { v4 as uuidv4 } from 'uuid'
@@ -54,8 +54,6 @@
   import InputMenu from './MessageInput/InputMenu.svelte'
   import VoiceRecording from './MessageInput/VoiceRecording.svelte'
   import ToolServersModal from './ToolServersModal.svelte'
-
-  const i18n = getContext('i18n')
 
   export let transparentBackground = false
 
@@ -165,7 +163,7 @@
 
   const uploadFileHandler = async (file, fullContext: boolean = false) => {
     if ($_user?.role !== 'admin' && !($_user?.permissions?.chat?.file_upload ?? true)) {
-      toast.error($i18n.t('You do not have permission to upload files.'))
+      toast.error('你没有上传文件的权限。')
       return null
     }
 
@@ -185,7 +183,7 @@
     }
 
     if (fileItem.size == 0) {
-      toast.error($i18n.t('You cannot upload an empty file.'))
+      toast.error('请勿上传空文件。')
       return null
     }
 
@@ -244,11 +242,7 @@
           fileSize: file.size,
           maxSize: ($config?.file?.max_size ?? 0) * 1024 * 1024,
         })
-        toast.error(
-          $i18n.t(`File size should not exceed {{maxSize}} MB.`, {
-            maxSize: $config?.file?.max_size,
-          }),
-        )
+        toast.error(`文件大小不应超过 ${$config?.file?.max_size} MB.`)
         return
       }
 
@@ -256,7 +250,7 @@
         ['image/gif', 'image/webp', 'image/jpeg', 'image/png', 'image/avif'].includes(file.type)
       ) {
         if (visionCapableModels.length === 0) {
-          toast.error($i18n.t('Selected model(s) do not support image inputs'))
+          toast.error('已选择的模型不支持发送图像')
           return
         }
         let reader = new FileReader()
@@ -366,16 +360,10 @@
 {#if loaded}
   <div class='w-full font-primary'>
     <div class=' mx-auto inset-x-0 bg-transparent flex justify-center'>
-      <div
-        class="flex flex-col px-3 {($settings?.widescreenMode ?? null)
-          ? 'max-w-full'
-          : 'max-w-6xl'} w-full"
-      >
+      <div class="flex flex-col px-3 {($settings?.widescreenMode ?? null) ? 'max-w-full' : 'max-w-6xl'} w-full">
         <div class='relative'>
           {#if autoScroll === false && history?.currentId}
-            <div
-              class=' absolute -top-12 left-0 right-0 flex justify-center z-30 pointer-events-none'
-            >
+            <div class=' absolute -top-12 left-0 right-0 flex justify-center z-30 pointer-events-none'>
               <button
                 class=' bg-white border border-gray-100 dark:border-none dark:bg-white/20 p-1.5 rounded-full pointer-events-auto'
                 on:click={() => {
@@ -413,12 +401,10 @@
                       alt='model profile'
                       class='size-3.5 max-w-[28px] object-cover rounded-full'
                       src={$models.find(model => model.id === atSelectedModel.id)?.info?.meta?.profile_image_url
-                        ?? ($i18n.language === 'dg-DG'
-                          ? `/doge.png`
-                          : `${WEBUI_BASE_URL}/static/favicon.png`)}
+                        ?? `${WEBUI_BASE_URL}/static/favicon.png`}
                     />
                     <div class='translate-y-[0.5px]'>
-                      Talking to <span class=' font-medium'>{atSelectedModel.name}</span>
+                      和 <span class='font-medium'>{atSelectedModel.name}</span> 对话
                     </div>
                   </div>
                   <div>
@@ -459,11 +445,7 @@
     </div>
 
     <div class="{transparentBackground ? 'bg-transparent' : 'bg-white dark:bg-gray-900'} ">
-      <div
-        class="{($settings?.widescreenMode ?? null)
-          ? 'max-w-full'
-          : 'max-w-6xl'} px-2.5 mx-auto inset-x-0"
-      >
+      <div class="{($settings?.widescreenMode ?? null) ? 'max-w-full' : 'max-w-6xl'} px-2.5 mx-auto inset-x-0">
         <div class="">
           <input
             bind:this={filesInputElement}
@@ -477,7 +459,7 @@
                 inputFilesHandler(_inputFiles)
               }
               else {
-                toast.error($i18n.t(`File not found.`))
+                toast.error('文件未找到。')
               }
 
               filesInputElement.value = ''
@@ -533,13 +515,9 @@
                             {#if atSelectedModel ? visionCapableModels.length === 0 : selectedModels.length !== visionCapableModels.length}
                               <Tooltip
                                 className=' absolute top-1 left-1'
-                                content={$i18n.t('{{ models }}', {
-                                  models: [
-                                    ...(atSelectedModel ? [atSelectedModel] : selectedModels),
-                                  ]
-                                    .filter(id => !visionCapableModels.includes(id))
-                                    .join(', '),
-                                })}
+                                content={[...(atSelectedModel ? [atSelectedModel] : selectedModels)]
+                                  .filter(id => !visionCapableModels.includes(id))
+                                  .join(', ')}
                               >
                                 <svg
                                   xmlns='http://www.w3.org/2000/svg'
@@ -626,13 +604,13 @@
                               || navigator.maxTouchPoints > 0
                               || navigator.msMaxTouchPoints > 0
                             ))}
-                        placeholder={placeholder || $i18n.t('Send a Message')}
+                        placeholder={placeholder || '发送消息'}
                         largeTextAsFile={$settings?.largeTextAsFile ?? false}
                         autocomplete={$config?.features?.enable_autocomplete_generation
                           && ($settings?.promptAutocomplete ?? false)}
                         generateAutoCompletion={async (text) => {
                           if (selectedModelIds.length === 0 || !selectedModelIds.at(0)) {
-                            toast.error($i18n.t('Please select a model first.'))
+                            toast.error('请先选择一个模型。')
                           }
 
                           const res = await generateAutoCompletion(
@@ -657,8 +635,7 @@
                           e = e.detail.event
 
                           const isCtrlPressed = e.ctrlKey || e.metaKey // metaKey is for Cmd key on Mac
-                          const commandsContainerElement
-                            = document.getElementById('commands-container')
+                          const commandsContainerElement = document.getElementById('commands-container')
 
                           if (e.key === 'Escape') {
                             stopResponse()
@@ -834,7 +811,7 @@
                       dir='auto'
                       bind:this={chatInputElement}
                       class='scrollbar-hidden bg-transparent dark:text-gray-100 outline-hidden w-full pt-3 px-1 resize-none'
-                      placeholder={placeholder || $i18n.t('Send a Message')}
+                      placeholder={placeholder || '输入消息'}
                       bind:value={prompt}
                       on:compositionstart={() => (isComposing = true)}
                       on:compositionend={() => (isComposing = false)}
@@ -1071,11 +1048,7 @@
                         }
                         catch (error) {
                           console.error('Google Drive Error:', error)
-                          toast.error(
-                            $i18n.t('Error accessing Google Drive: {{error}}', {
-                              error: error.message,
-                            }),
-                          )
+                          toast.error(`访问 Google Drive 时出错：${error.message}`)
                         }
                       }}
                       uploadOneDriveHandler={async () => {
@@ -1120,13 +1093,9 @@
                       </button>
                     </InputMenu>
 
-                    <div class='flex gap-1 items-center overflow-x-auto scrollbar-none flex-1'>
+                    <div class='flex gap-2 items-center overflow-x-auto scrollbar-none flex-1'>
                       {#if toolServers.length + selectedToolIds.length > 0}
-                        <Tooltip
-                          content={$i18n.t('{{COUNT}} Available Tools', {
-                            COUNT: toolServers.length + selectedToolIds.length,
-                          })}
-                        >
+                        <Tooltip content={`${toolServers.length + selectedToolIds.length} 个可用工具`}>
                           <button
                             class='translate-y-[0.5px] flex gap-1 items-center text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 rounded-lg p-1 self-center transition'
                             aria-label='Available Tools'
@@ -1136,8 +1105,7 @@
                             }}
                           >
                             <Wrench className='size-4' strokeWidth='1.75' />
-
-                            <span class='text-sm font-medium text-gray-600 dark:text-gray-300'>
+                            <span class='text-[0.8rem] font-medium text-gray-600 dark:text-gray-300'>
                               {toolServers.length + selectedToolIds.length}
                             </span>
                           </button>
@@ -1154,9 +1122,9 @@
                               ? 'bg-blue-100 dark:bg-blue-500/20 border-blue-400/20 text-blue-500 dark:text-blue-400'
                               : 'bg-transparent text-gray-600 dark:border-gray-700 dark:text-gray-300 border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800'}"
                           >
-                            <GlobeAlt className='size-5' strokeWidth='1.75' />
+                            <GlobeAlt className='size-4' strokeWidth='1.75' />
                             <span
-                              class='hidden @xl:block whitespace-nowrap overflow-hidden text-ellipsis translate-y-[0.5px]'
+                              class='hidden text-[0.8rem] @xl:block whitespace-nowrap overflow-hidden text-ellipsis translate-y-[0.5px]'
                             >联网搜索</span>
                           </button>
                         {/if}
@@ -1169,9 +1137,9 @@
                               ? 'bg-blue-100 dark:bg-blue-500/20 border-blue-400/20 text-blue-500 dark:text-blue-400'
                               : 'bg-transparent border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-300  hover:bg-gray-50 dark:hover:bg-gray-800 '}"
                           >
-                            <Photo className='size-5' strokeWidth='1.75' />
+                            <Photo className='size-4' strokeWidth='1.75' />
                             <span
-                              class='hidden @xl:block whitespace-nowrap overflow-hidden text-ellipsis translate-y-[0.5px]'
+                              class='hidden text-[0.8rem] @xl:block whitespace-nowrap overflow-hidden text-ellipsis translate-y-[0.5px]'
                             >生成图像</span>
                           </button>
                         {/if}
@@ -1185,9 +1153,9 @@
                               ? 'bg-blue-100 dark:bg-blue-500/20 border-blue-400/20 text-blue-500 dark:text-blue-400'
                               : 'bg-transparent border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-300  hover:bg-gray-50 dark:hover:bg-gray-800 '}"
                           >
-                            <CommandLine className='size-5' strokeWidth='1.75' />
+                            <CommandLine className='size-4' strokeWidth='1.75' />
                             <span
-                              class='hidden @xl:block whitespace-nowrap overflow-hidden text-ellipsis translate-y-[0.5px]'
+                              class='hidden text-[0.8rem] @xl:block whitespace-nowrap overflow-hidden text-ellipsis translate-y-[0.5px]'
                             >代码解释器</span>
                           </button>
                         {/if}
@@ -1197,7 +1165,7 @@
 
                   <div class='self-end flex space-x-1 mr-1 shrink-0'>
                     {#if (!history?.currentId || history.messages[history.currentId]?.done == true) && ($_user?.role === 'admin' || ($_user?.permissions?.chat?.stt ?? true))}
-                      <Tooltip content={$i18n.t('Record voice')}>
+                      <Tooltip content='语音输入'>
                         <button
                           id='voice-input-button'
                           class=' text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 transition rounded-full p-1.5 mr-0.5 self-center'
@@ -1207,14 +1175,7 @@
                               let stream = await navigator.mediaDevices
                                 .getUserMedia({ audio: true })
                                 .catch((err) => {
-                                  toast.error(
-                                    $i18n.t(
-                                      `Permission denied when accessing microphone: {{error}}`,
-                                      {
-                                        error: err,
-                                      },
-                                    ),
-                                  )
+                                  toast.error(`申请麦克风权限被拒绝：${err}`)
                                   return null
                                 })
 
@@ -1226,10 +1187,10 @@
                               stream = null
                             }
                             catch {
-                              toast.error($i18n.t('Permission denied when accessing microphone'))
+                              toast.error('申请麦克风权限被拒绝')
                             }
                           }}
-                          aria-label='Voice Input'
+                          aria-label='语音输入'
                         >
                           <svg
                             xmlns='http://www.w3.org/2000/svg'
@@ -1248,7 +1209,7 @@
 
                     {#if (taskIds && taskIds.length > 0) || (history.currentId && history.messages[history.currentId]?.done != true)}
                       <div class=' flex items-center'>
-                        <Tooltip content={$i18n.t('Stop')}>
+                        <Tooltip content='停止'>
                           <button
                             class='bg-white hover:bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 transition rounded-full p-1.5'
                             on:click={() => {
@@ -1272,21 +1233,19 @@
                       </div>
                     {:else if prompt === '' && files.length === 0 && ($_user?.role === 'admin' || ($_user?.permissions?.chat?.call ?? true))}
                       <div class=' flex items-center'>
-                        <Tooltip content={$i18n.t('Call')}>
+                        <Tooltip content='呼叫'>
                           <button
                             class=' bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black dark:hover:bg-gray-100 transition rounded-full p-1.5 self-center'
                             type='button'
                             on:click={async () => {
                               if (selectedModels.length > 1) {
-                                toast.error($i18n.t('Select only one model to call'))
+                                toast.error('请仅选择一个模型进行呼叫')
 
                                 return
                               }
 
                               if ($config.audio.stt.engine === 'web') {
-                                toast.error(
-                                  $i18n.t('Call feature is not supported when using Web STT engine'),
-                                )
+                                toast.error('使用 Web 语音转文字引擎时不支持呼叫功能。')
 
                                 return
                               }
@@ -1322,9 +1281,7 @@
                               }
                               catch (err) {
                                 // If the user denies the permission or an error occurs, show an error message
-                                toast.error(
-                                  $i18n.t('Permission denied when accessing media devices'),
-                                )
+                                toast.error('申请媒体设备权限被拒绝')
                               }
                             }}
                             aria-label='Call'
@@ -1335,7 +1292,7 @@
                       </div>
                     {:else}
                       <div class=' flex items-center'>
-                        <Tooltip content={$i18n.t('Send message')}>
+                        <Tooltip content='发送消息'>
                           <button
                             id='send-message-button'
                             class="{!(prompt === '' && files.length === 0)

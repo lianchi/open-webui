@@ -74,7 +74,6 @@
       </div>
 
       <div class='self-start flex flex-none items-center text-gray-600 dark:text-gray-400'>
-        <!-- <div class="md:hidden flex self-center w-[1px] h-5 mx-2 bg-gray-300 dark:bg-stone-700" /> -->
         {#if shareEnabled && chat && (chat.id || $temporaryChatEnabled)}
           <Menu
             {chat}
@@ -87,7 +86,7 @@
             }}
           >
             <button
-              class='flex cursor-pointer px-2 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-850 transition'
+              class='flex cursor-pointer px-2 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition'
               id='chat-context-menu-button'
             >
               <div class=' m-auto self-center'>
@@ -110,9 +109,9 @@
           </Menu>
         {/if}
 
-        <Tooltip content='对话高级设置'>
+        <!-- <Tooltip content='对话高级设置'>
           <button
-            class='flex cursor-pointer px-2 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-850 transition'
+            class='flex cursor-pointer px-2 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition'
             on:click={async () => {
               await showControls.set(!$showControls)
             }}
@@ -122,14 +121,14 @@
               <AdjustmentsHorizontal className=' size-5' strokeWidth='0.5' />
             </div>
           </button>
-        </Tooltip>
+        </Tooltip> -->
 
         <Tooltip content='新对话'>
           <button
             id='new-chat-button'
             class="flex {$showSidebar
               ? 'md:hidden'
-              : ''} cursor-pointer px-2 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-850 transition"
+              : ''} cursor-pointer px-2 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
             on:click={() => {
               initNewChat()
             }}
