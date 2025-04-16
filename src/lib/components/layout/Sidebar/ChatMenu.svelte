@@ -176,9 +176,7 @@
 		}
 	}}
 >
-	<Tooltip content={$i18n.t('More')}>
-		<slot />
-	</Tooltip>
+	<slot />
 
 	<div slot="content">
 		<DropdownMenu.Content

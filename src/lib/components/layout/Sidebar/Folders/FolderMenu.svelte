@@ -23,7 +23,7 @@
 		}
 	}}
 >
-	<Tooltip content={$i18n.t('More')}>
+	<Tooltip content='更多'>
 		<slot />
 	</Tooltip>
 

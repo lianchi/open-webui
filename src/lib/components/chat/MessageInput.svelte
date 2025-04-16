@@ -43,7 +43,7 @@
   import Tooltip from '../common/Tooltip.svelte'
   import CommandLine from '../icons/CommandLine.svelte'
   import GlobeAlt from '../icons/GlobeAlt.svelte'
-  import Headphone from '../icons/Headphone.svelte'
+  import PhoneCall from '../icons/PhoneCall.svelte'
 
   import Photo from '../icons/Photo.svelte'
   import PhotoSolid from '../icons/PhotoSolid.svelte'
@@ -589,7 +589,7 @@
                 <div class='px-2.5'>
                   {#if $settings?.richTextInput ?? true}
                     <div
-                      class='scrollbar-hidden text-left bg-transparent dark:text-gray-100 outline-hidden w-full pt-3 px-1 resize-none h-fit max-h-80 overflow-auto'
+                      class='scrollbar-hidden text-left bg-transparent dark:text-gray-100 outline-hidden w-full pt-3 px-1 resize-none h-fit max-h-80 min-h-14 overflow-auto'
                       id='chat-input-container'
                     >
                       <RichTextInput
@@ -1117,7 +1117,7 @@
                           <button
                             on:click|preventDefault={() => (webSearchEnabled = !webSearchEnabled)}
                             type='button'
-                            class="px-1.5 @xl:px-2.5 py-1.5 flex gap-1.5 items-center text-sm rounded-full font-medium transition-colors duration-200 focus:outline-hidden max-w-full overflow-hidden border {webSearchEnabled
+                            class="px-1.5 @xl:px-2.5 py-1.5 flex gap-1.5 items-center text-sm rounded-full font-medium focus:outline-hidden max-w-full overflow-hidden border {webSearchEnabled
                               || ($settings?.webSearch ?? false) === 'always'
                               ? 'bg-blue-100 dark:bg-blue-500/20 border-blue-400/20 text-blue-500 dark:text-blue-400'
                               : 'bg-transparent text-gray-600 dark:border-gray-700 dark:text-gray-300 border-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800'}"
@@ -1133,7 +1133,7 @@
                           <button
                             on:click|preventDefault={() => (imageGenerationEnabled = !imageGenerationEnabled)}
                             type='button'
-                            class="px-1.5 @xl:px-2.5 py-1.5 flex gap-1.5 items-center text-sm rounded-full font-medium transition-colors duration-200 focus:outline-hidden max-w-full overflow-hidden border {imageGenerationEnabled
+                            class="px-1.5 @xl:px-2.5 py-1.5 flex gap-1.5 items-center text-sm rounded-full font-medium focus:outline-hidden max-w-full overflow-hidden border {imageGenerationEnabled
                               ? 'bg-blue-100 dark:bg-blue-500/20 border-blue-400/20 text-blue-500 dark:text-blue-400'
                               : 'bg-transparent border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-300  hover:bg-gray-50 dark:hover:bg-gray-800 '}"
                           >
@@ -1149,7 +1149,7 @@
                             on:click|preventDefault={() =>
                               (codeInterpreterEnabled = !codeInterpreterEnabled)}
                             type='button'
-                            class="px-1.5 @xl:px-2.5 py-1.5 flex gap-1.5 items-center text-sm rounded-full font-medium transition-colors duration-200 focus:outline-hidden max-w-full overflow-hidden border {codeInterpreterEnabled
+                            class="px-1.5 @xl:px-2.5 py-1.5 flex gap-1.5 items-center text-sm rounded-full font-medium focus:outline-hidden max-w-full overflow-hidden border {codeInterpreterEnabled
                               ? 'bg-blue-100 dark:bg-blue-500/20 border-blue-400/20 text-blue-500 dark:text-blue-400'
                               : 'bg-transparent border-gray-100 dark:border-gray-700 text-gray-600 dark:text-gray-300  hover:bg-gray-50 dark:hover:bg-gray-800 '}"
                           >
@@ -1168,7 +1168,7 @@
                       <Tooltip content='语音输入'>
                         <button
                           id='voice-input-button'
-                          class=' text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 transition rounded-full p-1.5 mr-0.5 self-center'
+                          class=' text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition rounded-full p-1.5 mr-0.5 self-center'
                           type='button'
                           on:click={async () => {
                             try {
@@ -1235,18 +1235,16 @@
                       <div class=' flex items-center'>
                         <Tooltip content='呼叫'>
                           <button
-                            class=' bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black dark:hover:bg-gray-100 transition rounded-full p-1.5 self-center'
+                            class=' bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black dark:hover:bg-gray-100 transition rounded-full p-[5px] self-center'
                             type='button'
                             on:click={async () => {
                               if (selectedModels.length > 1) {
                                 toast.error('请仅选择一个模型进行呼叫')
-
                                 return
                               }
 
                               if ($config.audio.stt.engine === 'web') {
                                 toast.error('使用 Web 语音转文字引擎时不支持呼叫功能。')
-
                                 return
                               }
                               // check if user has access to getUserMedia
@@ -1286,7 +1284,7 @@
                             }}
                             aria-label='Call'
                           >
-                            <Headphone className='size-5' />
+                            <PhoneCall className='size-5' />
                           </button>
                         </Tooltip>
                       </div>

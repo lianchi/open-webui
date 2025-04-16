@@ -854,7 +854,7 @@
             />
           {/if}
 
-          <div class='flex-1 flex flex-col overflow-y-auto scrollbar-hidden'>
+          <div class='flex-1 flex flex-col scrollbar-hidden'>
             <div class='pt-1.5'>
               {#if $chats}
                 {#each $chats as chat, idx}

@@ -389,7 +389,6 @@
           renameHandler={async () => {
             chatTitle = title
             confirmEdit = true
-
             await tick()
             const input = document.getElementById(`chat-title-input-${id}`)
             if (input) {
@@ -410,8 +409,8 @@
           }}
         >
           <button
-            aria-label='Chat Menu'
-            class=' self-center dark:hover:text-white transition'
+            aria-label='对话菜单'
+            class='self-center dark:hover:text-white transition'
             on:click={() => {
               dispatch('select')
             }}
