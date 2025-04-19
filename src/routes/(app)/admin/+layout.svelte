@@ -55,29 +55,33 @@
               class="min-w-fit rounded-full p-1.5 {['/admin/users'].includes($page.url.pathname)
                 ? ''
                 : 'text-gray-300 dark:text-gray-600 hover:text-gray-700 dark:hover:text-white'} transition"
-              href='/admin'>用户</a
-            >
+              href='/admin'>
+              用户
+            </a>
 
             <a
               class="min-w-fit rounded-full p-1.5 {$page.url.pathname.includes('/admin/evaluations')
                 ? ''
                 : 'text-gray-300 dark:text-gray-600 hover:text-gray-700 dark:hover:text-white'} transition"
-              href='/admin/evaluations'>评估</a
-            >
+              href='/admin/evaluations'>
+              评估
+            </a>
 
             <a
               class="min-w-fit rounded-full p-1.5 {$page.url.pathname.includes('/admin/functions')
                 ? ''
                 : 'text-gray-300 dark:text-gray-600 hover:text-gray-700 dark:hover:text-white'} transition"
-              href='/admin/functions'>函数</a
-            >
+              href='/admin/functions'>
+              函数
+            </a>
 
             <a
               class="min-w-fit rounded-full p-1.5 {$page.url.pathname.includes('/admin/settings')
                 ? ''
                 : 'text-gray-300 dark:text-gray-600 hover:text-gray-700 dark:hover:text-white'} transition"
-              href='/admin/settings'>设置</a
-            >
+              href='/admin/settings'>
+              设置
+            </a>
           </div>
         </div>
       </div>

@@ -203,9 +203,7 @@
 						? '#171717'
 						: _theme === 'oled-dark'
 							? '#000000'
-							: _theme === 'her'
-								? '#983724'
-								: '#ffffff'
+							: '#ffffff'
 				);
 			}
 		}
@@ -250,7 +248,6 @@
 						<option value="dark">🌑 暗色</option>
 						<option value="oled-dark">🌃 黑色</option>
 						<option value="light">☀️ 浅色</option>
-						<option value="her">🌷 玫瑰</option>
 					</select>
 				</div>
 			</div>

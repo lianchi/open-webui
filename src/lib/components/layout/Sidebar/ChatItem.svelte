@@ -247,17 +247,15 @@
 
 <div
   bind:this={itemElement}
-  class=' w-full {className} relative group'
+  class='w-full {className} relative group mb-1'
   draggable={draggable && !confirmEdit}
 >
   {#if confirmEdit}
     <div
       class=" w-full flex justify-between rounded-lg px-[11px] py-[6px] {id === $chatId
-        || confirmEdit
-        ? 'bg-white/80 dark:bg-gray-900'
-        : selected
-        ? 'bg-white/60 dark:bg-gray-950'
-        : 'group-hover:bg-white/60 dark:group-hover:bg-gray-950'}  whitespace-nowrap text-ellipsis"
+        || confirmEdit || selected
+        ? 'bg-white/60 dark:bg-gray-800'
+        : 'group-hover:bg-white/60 dark:group-hover:bg-gray-850'}  whitespace-nowrap text-ellipsis"
     >
       <input
         use:focusEdit
@@ -270,11 +268,9 @@
   {:else}
     <a
       class=" w-full flex justify-between rounded-lg px-[11px] py-[6px] {id === $chatId
-        || confirmEdit
-        ? 'bg-white/80 dark:bg-gray-900'
-        : selected
-        ? 'bg-white/60 dark:bg-gray-950'
-        : ' group-hover:bg-white/60 dark:group-hover:bg-gray-950'}  whitespace-nowrap text-ellipsis"
+        || confirmEdit || selected
+        ? 'bg-white/60 dark:bg-gray-800'
+        : ' group-hover:bg-white/60 dark:group-hover:bg-gray-850'}  whitespace-nowrap text-ellipsis"
       href='/c/{id}'
       on:click={() => {
         dispatch('select')

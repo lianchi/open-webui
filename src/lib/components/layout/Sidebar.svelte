@@ -1,5 +1,6 @@
 <script lang='ts'>
   import { goto } from '$app/navigation'
+  import { page } from '$app/stores'
   import { createNewChannel, getChannels } from '$lib/apis/channels'
   import {
     createNewChat,
@@ -544,7 +545,7 @@
     <div class='px-1.5 flex justify-between space-x-1 text-gray-600 dark:text-gray-400'>
       <a
         id='sidebar-new-chat-button'
-        class='flex items-center flex-1 space-x-2.5 rounded-lg px-2 py-1.5 hover:bg-white/60 dark:hover:bg-gray-800 transition no-drag-region'
+        class='flex items-center flex-1 space-x-2.5 rounded-lg p-2 hover:bg-white/60 dark:hover:bg-gray-800 transition no-drag-region'
         href='/'
         draggable='false'
         on:click={async () => {
@@ -560,7 +561,7 @@
         }}
       >
         <Plus className='size-5' strokeWidth='2' />
-        <div class='font-bold text-gray-850 dark:text-white'>
+        <div class='font-medium text-gray-850 dark:text-white'>
           新对话
         </div>
       </a>
@@ -589,7 +590,7 @@
     {#if $user?.role === 'admin' || $user?.permissions?.workspace?.models || $user?.permissions?.workspace?.knowledge || $user?.permissions?.workspace?.prompts || $user?.permissions?.workspace?.tools}
       <div class='px-1.5 flex justify-center text-gray-800 dark:text-gray-200'>
         <a
-          class='grow flex items-center space-x-3 rounded-lg px-2 py-1.5 hover:bg-white/60 dark:hover:bg-gray-850 transition'
+          class="grow flex items-center space-x-3 rounded-lg p-2 transition hover:bg-white/60 dark:hover:bg-gray-800 {$page.url.pathname.startsWith('/workspace') ? 'bg-white/60 dark:bg-gray-800' : ''}"
           href='/workspace'
           on:click={() => {
             selectedChatId = null
@@ -714,7 +715,7 @@
         on:drop={async (e) => {
           const { type, id, item } = e.detail
           if (type === 'chat') {
-            let chat = await getChatById(localStorage.token, id).catch((error) => {
+            let chat = await getChatById(localStorage.token, id).catch((_error) => {
               return null
             })
             if (!chat && item) {
@@ -859,7 +860,7 @@
               {#if $chats}
                 {#each $chats as chat, idx}
                   {#if idx === 0 || (idx > 0 && chat.time_range !== $chats[idx - 1].time_range)}
-                    <div class="w-full pl-2.5 text-xs text-gray-500 dark:text-gray-500 font-medium {idx === 0 ? '' : 'pt-5'} pb-1.5">
+                    <div class="w-full pl-1 text-xs text-gray-500 dark:text-gray-500 font-medium {idx === 0 ? '' : 'pt-3.5'} pb-1.5">
                       {chat.time_range}
                     </div>
                   {/if}
